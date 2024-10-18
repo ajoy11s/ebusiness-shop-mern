@@ -9,7 +9,7 @@ function Header() {
         <div className="flex-1">
         <NavLink to={'/'}> <img
             src="/images/logo-ecommerce.png" className="w-16 h-16 rounded-xl" /></NavLink>
-          <a className="btn btn-ghost text-xl">eBook Shop</a>
+          <a className="btn btn-ghost text-xl">eBusiness Shop</a>
         </div>
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
