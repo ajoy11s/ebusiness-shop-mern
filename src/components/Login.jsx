@@ -1,12 +1,13 @@
 import React, { createContext } from 'react';
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 
 const Login = () => {
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // login(); // Simulate a login
+  const handileLoginBtnClick = () => {
+    navigate("/dashboard");
   };
 
   return (
@@ -31,7 +32,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+                <button className="btn btn-primary" onClick={handileLoginBtnClick}>Login</button>
               </div>
             </form>
           </div>
