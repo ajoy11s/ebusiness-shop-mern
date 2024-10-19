@@ -7,7 +7,7 @@ function Header() {
 
   const navigate = useNavigate();
   const { current_user, logOutUser } = useContext(AuthContext);
-  
+
   const logOutButtonClick = () => {
     logOutUser();
     navigate("/");
@@ -38,8 +38,14 @@ function Header() {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow font-semibold text-xl text-black">
               <li><NavLink to={"/"} >Home</NavLink></li>
               <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
-
-            </ul>
+              {
+                current_user ? (
+                  <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
+                ) : (
+                  <></>
+                )
+              }
+          </ul>
           </div>
           <NavLink to={'/'}> <img
             src="/images/logo-ecommerce.png" className="w-16 h-16 rounded-xl" /></NavLink>
@@ -50,7 +56,13 @@ function Header() {
           <ul className="menu menu-horizontal px-1 text-sm text-black">
             <li><NavLink to={"/"} >Home</NavLink></li>
             <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
-
+            {
+                current_user ? (
+                  <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
+                ) : (
+                  <></>
+                )
+              }
           </ul>
         </div>
 

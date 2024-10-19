@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 
 export default function DashboardSidebarContent() {
     return (
@@ -7,7 +8,7 @@ export default function DashboardSidebarContent() {
                 <li className="menu-title text-black font-semibold">Dashboard</li>
                 <li><a>All Users</a></li>
                 <li><a>All Categories</a></li>
-                <li><a>All Products</a></li>
+                <li><NavLink to={"/dashboard/productlist"} >All Products</NavLink></li>
                 <li><a>Profile</a></li>
                 <li><a>Logout</a></li>
             </ul>
