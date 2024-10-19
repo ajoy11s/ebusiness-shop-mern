@@ -28,7 +28,7 @@ const Login = () => {
 
     signInEmailPassword(emaillogin, passwordlogin)
       .then((result) => {
-        console.log("Data User:" + result.user);
+        console.log("Data User:" + JSON.stringify(result.user));
         toast.success("Login Successful", {
           position: "top-right",
         });

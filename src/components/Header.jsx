@@ -1,7 +1,17 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
 
 function Header() {
+
+  const navigate = useNavigate();
+  const { current_user, logOutUser } = useContext(AuthContext);
+  
+  const logOutButtonClick = () => {
+    logOutUser();
+    navigate("/");
+  };
 
   return (
     <>
@@ -38,18 +48,33 @@ function Header() {
 
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 text-sm text-black">
-          <li><NavLink to={"/"} >Home</NavLink></li>
-          <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
+            <li><NavLink to={"/"} >Home</NavLink></li>
+            <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
 
           </ul>
         </div>
-        
+
 
         <div className="navbar-end">
-          <ul className="menu menu-horizontal px-1">
-            <li><NavLink to={"/login"} >Login</NavLink></li>
-          </ul>
+          {
+            current_user ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <img src={current_user?.photoURL || "/images/user.png"} className="w-7 rounded-full" />
+                  <span>{current_user?.displayName || "No Name"}</span>
+                  <button onClick={logOutButtonClick} className="btn btn-outline btn-success">
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              <ul className="menu menu-horizontal px-1">
+                <li><NavLink to={"/login"} >Login</NavLink></li>
+              </ul>
+            )
+          }
         </div>
+
       </div>
       {/* <Link to={"/login"} >Login</Link>
      <Link to={"/dashboard"} >Dashboard</Link> */}

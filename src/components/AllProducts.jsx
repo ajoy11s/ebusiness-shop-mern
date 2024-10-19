@@ -1,7 +1,13 @@
 import React from 'react';
+import { useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
 
 const AllProducts = () => {
+
+    const { current_user } = useContext(AuthContext);
+
     return (
+        
         <div className="grid grid-cols-1 md:grid-cols-4 px-4 space-y-4 justify-items-center">
 
             <div className="card bg-base-100 w-72 shadow-lg">
