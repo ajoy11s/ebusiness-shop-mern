@@ -1,10 +1,18 @@
 import { Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { useState } from 'react';
+import { useContext,createContext } from "react";
 import Header from '../components/Header';
 import Banner from '../components/Banner';
 import Footer from '../components/Footer';
 import DashboardSidebarContent from '../components/DashboardSidebarContent'
+import { AuthContext } from "../provider/AuthProvider";
 
 const DashboardLayout = () => {
+    const { current_user } = useContext(AuthContext);
+
+    console.log(current_user);
+
     return (
         <>
             <div>
