@@ -4,6 +4,9 @@ import React from 'react';
 export default function UserList() {
     return (
         <div>
+            <div className="flex flex-row justify-center py-2">
+                <h2 className="text-green-600 font-semibold">User List</h2>
+            </div>
             <div className="overflow-x-auto">
                 <table className="table">
                     {/* head */}
@@ -17,7 +20,7 @@ export default function UserList() {
                             <th>Name</th>
                             <th>Job</th>
                             <th>Favorite Color</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,9 +47,9 @@ export default function UserList() {
                                 </div>
                             </td>
                             <td>
-                                Zemlak, Daniel and Leannon
+                                DoICT
                                 <br />
-                                <span className="badge badge-ghost badge-sm">Desktop Support Technician</span>
+                                <span className="badge badge-ghost badge-sm">ICT Work</span>
                             </td>
                             <td>Purple</td>
                             <th className="space-x-2">
