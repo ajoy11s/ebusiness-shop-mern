@@ -4,7 +4,8 @@ import AllProducts from '../components/AllProducts';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../Layout/DashboardLayout'
 import MainLayout from "../Layout/MainLayout";
-import ProductList from "../sidebarmenu/ProductList";
+import ProductList from "../sidebarmenu/Products/ProductList";
+import UserList from "../sidebarmenu/Users/UserList"
 
 const router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/productlist",
                 element: <ProductList />,
+            },
+            {
+                path: "/dashboard/userlist",
+                element: <UserList />,
             }
         ]
     }

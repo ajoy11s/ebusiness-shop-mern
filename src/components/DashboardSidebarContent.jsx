@@ -6,7 +6,7 @@ export default function DashboardSidebarContent() {
         <div>
             <ul className="menu bg-base-200 rounded-box w-56 sm:w-full">
                 <li className="menu-title text-black font-semibold">Dashboard</li>
-                <li><a>All Users</a></li>
+                <li><NavLink to={"/dashboard/userlist"} >All Users</NavLink></li>
                 <li><a>All Categories</a></li>
                 <li><NavLink to={"/dashboard/productlist"} >All Products</NavLink></li>
                 <li><a>Profile</a></li>
