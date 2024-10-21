@@ -1,22 +1,16 @@
 import React from 'react';
-import { useState, useContext, useEffect, createContext, useRef } from "react";
+import { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
 
-export default function ProductList() {
+export default function CategoryList() {
 
-    const [productlist, setProductList] = useState([]);
-    const [isProductFormOpen, setIsProductFormOpen] = useState(false);
+    
+    const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
 
-    /*useEffect(() => {
-        fetch('http://localhost:3000/testdata')
-            .then(res => res.json())
-            .then(data => console.log(data));
 
-    }, []);*/
-
-    const handleAddProductFormHideShow = () => {
-        setIsProductFormOpen(!isProductFormOpen);
+    const handleAddCategoryFormHideShow = () => {
+        setIsCategoryFormOpen(!isCategoryFormOpen);
     }
 
     // Image upload code start
@@ -50,9 +44,8 @@ export default function ProductList() {
                 (uri) => {
                     setResizedImage(uri);
                 },
-                'base64' // output type
-            );
-            //setImage(URL.createObjectURL(selectedImage));
+                'base64' 
+            );          
         }
         //Image resize end
 
@@ -61,7 +54,6 @@ export default function ProductList() {
         formData.append('image', selectedImage);
 
         const apikey = import.meta.env.VITE_IMAGE_BB_IMAGE_UPLOAD_API_KEY;  // Replace with your actual API key
-        console.log(apikey);
         const uploadUrl = `https://api.imgbb.com/1/upload?key=${apikey}`;
 
         try {
@@ -80,19 +72,18 @@ export default function ProductList() {
             if (data.data.display_url) {
                
             //Save data on mongoDB Start
-                const productlist = {
-                    product_name: "Ajoy Paul",
-                    category_id: "New Test MongoDB",
+                const categorylist = {
+                    Category_name: "Test Category",
                     image_url: data.data.display_url,
                     isactive: true,
                     isdelete: false
                 }
-                const response = await fetch(import.meta.env.VITE_PRODUCT_ADD_IMAGE_URL, {
+                const response = await fetch(import.meta.env.VITE_CATEGORY_ADD_IMAGE_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(productlist),
+                    body: JSON.stringify(categorylist),
                 });
                 const resultdata = await response.json();
             //Save data on mongoDB End
@@ -110,34 +101,22 @@ export default function ProductList() {
         <div>
             <div className="flex flex-row justify-start py-2">
 
-                <button className="btn btn-outline btn-success" onClick={handleAddProductFormHideShow}>
+                <button className="btn btn-outline btn-success" onClick={handleAddCategoryFormHideShow}>
                     <img
                         src="/public/images/dashboard/add-product.png" className="w-8 h-8 rounded-xl" />
-                    Add product</button>
+                    Add Category</button>
             </div>
             {
-                isProductFormOpen ? (
+                isCategoryFormOpen ? (
                     <div className="hero bg-base-200 min-h-80vh">
                         <div className="hero-content flex-col lg:flex-row-reverse w-3/4">
                             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
                                 <form className="card-body">
                                     <div>
                                         <label className="label">
-                                            <span className="label-text">Product Name</span>
+                                            <span className="label-text">Category Name</span>
                                         </label>
                                         <input type="text" name="product_name" id="product_name" className="input input-bordered input-secondary w-full max-w-xs" required />
-                                    </div>
-                                    <div className="form-control">
-                                        <label className="label">
-                                            <span className="label-text">Product Category</span>
-                                        </label>
-                                        <details className="dropdown">
-                                            <summary className="btn w-full">Please Select</summary>
-                                            <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                                                <li><a>Item 1</a></li>
-                                                <li><a>Item 2</a></li>
-                                            </ul>
-                                        </details>
                                     </div>
                                     <div className="form-control">
                                         <label className="label">
@@ -148,7 +127,7 @@ export default function ProductList() {
                                             className="file-input file-input-bordered file-input-success w-full max-w-xs" />
                                     </div>
                                     <div className="form-control mt-2">
-                                        <button className="btn btn-primary" onClick={handleImageUpload} disabled={loading}>Add Product</button>
+                                        <button className="btn btn-primary" onClick={handleImageUpload} disabled={loading}>Add Category</button>
                                         <span>{loading ? 'Uploading and Data Save...' : ''}</span>
                                     </div>
                                 </form>
@@ -184,8 +163,6 @@ export default function ProductList() {
                         </table>
                     </div>
                 )
-
-
             }
 
         </div>

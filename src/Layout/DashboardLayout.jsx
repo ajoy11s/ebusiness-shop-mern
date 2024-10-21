@@ -12,8 +12,6 @@ import AllProducts from "../components/AllProducts";
 const DashboardLayout = () => {
     const { current_user } = useContext(AuthContext);
 
-    console.log(current_user);
-
     return (
         <>
             <div>

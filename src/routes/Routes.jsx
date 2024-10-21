@@ -5,7 +5,8 @@ import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../Layout/DashboardLayout'
 import MainLayout from "../Layout/MainLayout";
 import ProductList from "../sidebarmenu/Products/ProductList";
-import UserList from "../sidebarmenu/Users/UserList"
+import UserList from "../sidebarmenu/Users/UserList";
+import CategoryList from "../sidebarmenu/Category/CategoryList"
 
 const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <DashboardLayout />,
         children: [
+            {
+                path: "/dashboard/categorylist",
+                element: <CategoryList />,
+            },
             {
                 path: "/dashboard/productlist",
                 element: <ProductList />,
