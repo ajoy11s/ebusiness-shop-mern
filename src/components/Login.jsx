@@ -13,11 +13,6 @@ const Login = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isOpenReg, setIsOpenReg] = useState(false);
 
-  const [nameReg, setNameReg] = useState('');
-  const [emailReg, setEmailReg] = useState('');
-  const [passwordReg, setPasswordReg] = useState('');
-  const [mobileNoReg, setMobileNoReg] = useState('');
-  const [addressReg, setAddressReg] = useState('');
 
   const formRef = useRef();
   const handleLoginBtnClick = (evt) => {

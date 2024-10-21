@@ -1,11 +1,10 @@
 import React from 'react';
-import { useState } from "react";
+import { useState,useRef,useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
 
 export default function CategoryList() {
-
-    
+    const formRef = useRef();
     const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
 
 
@@ -23,9 +22,9 @@ export default function CategoryList() {
         setSelectedImage(e.target.files[0]);
     };
 
-    const handleImageUpload = async (event) => {
+    const handleImageUploadAndSaveData = async (event) => {
         event.preventDefault();
-
+        
         if (!selectedImage) {
             console.error("No image selected");
             return;
@@ -36,8 +35,8 @@ export default function CategoryList() {
             // Resize the image
             Resizer.imageFileResizer(
                 selectedImage,
-                32, // new width
-                32, // new height
+                96, // new width
+                96, // new height
                 'JPEG', // format
                 100, // quality
                 0, // rotation
@@ -72,8 +71,11 @@ export default function CategoryList() {
             if (data.data.display_url) {
                
             //Save data on mongoDB Start
+            const formData = new FormData(formRef.current);
+            const category_name = formData.get("category_name");
+
                 const categorylist = {
-                    Category_name: "Test Category",
+                    category_name: category_name,
                     image_url: data.data.display_url,
                     isactive: true,
                     isdelete: false
@@ -97,6 +99,9 @@ export default function CategoryList() {
     };
     // Image upload code end
 
+
+    
+
     return (
         <div>
             <div className="flex flex-row justify-start py-2">
@@ -111,12 +116,12 @@ export default function CategoryList() {
                     <div className="hero bg-base-200 min-h-80vh">
                         <div className="hero-content flex-col lg:flex-row-reverse w-3/4">
                             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
-                                <form className="card-body">
+                                <form className="card-body" ref={formRef}>
                                     <div>
                                         <label className="label">
                                             <span className="label-text">Category Name</span>
                                         </label>
-                                        <input type="text" name="product_name" id="product_name" className="input input-bordered input-secondary w-full max-w-xs" required />
+                                        <input type="text" name="category_name" id="category_name" className="input input-bordered input-secondary w-full max-w-xs" required />
                                     </div>
                                     <div className="form-control">
                                         <label className="label">
@@ -127,7 +132,7 @@ export default function CategoryList() {
                                             className="file-input file-input-bordered file-input-success w-full max-w-xs" />
                                     </div>
                                     <div className="form-control mt-2">
-                                        <button className="btn btn-primary" onClick={handleImageUpload} disabled={loading}>Add Category</button>
+                                        <button className="btn btn-primary" onClick={handleImageUploadAndSaveData} disabled={loading}>Add Category</button>
                                         <span>{loading ? 'Uploading and Data Save...' : ''}</span>
                                     </div>
                                 </form>

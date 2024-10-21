@@ -7,17 +7,25 @@ export default function ProductList() {
 
     const [productlist, setProductList] = useState([]);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
-
-    /*useEffect(() => {
-        fetch('http://localhost:3000/testdata')
-            .then(res => res.json())
-            .then(data => console.log(data));
-
-    }, []);*/
+    const formRef = useRef();
 
     const handleAddProductFormHideShow = () => {
         setIsProductFormOpen(!isProductFormOpen);
     }
+
+    const [options, setOptions] = useState([]);
+    const [selectedId, setSelectedId] = useState('');
+
+  const handleChange = (event) => {
+    setSelectedId(event.target.value);
+  };
+
+    useEffect(() => {
+        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
+            .then(res => res.json())
+            .then(data => setOptions(data));
+
+    }, []);
 
     // Image upload code start
     const [selectedImage, setSelectedImage] = useState(null);
@@ -78,11 +86,13 @@ export default function ProductList() {
             const data = await response.json();
             setImageUrl(data.data.display_url); // Get the image URL from the response
             if (data.data.display_url) {
-               
-            //Save data on mongoDB Start
+
+                //Save data on mongoDB Start
+                const formData = new FormData(formRef.current);
+                const productname = formData.get("product_name");
                 const productlist = {
-                    product_name: "Ajoy Paul",
-                    category_id: "New Test MongoDB",
+                    product_name: productname,
+                    category_id: selectedId,
                     image_url: data.data.display_url,
                     isactive: true,
                     isdelete: false
@@ -95,7 +105,7 @@ export default function ProductList() {
                     body: JSON.stringify(productlist),
                 });
                 const resultdata = await response.json();
-            //Save data on mongoDB End
+                //Save data on mongoDB End
 
             }
         } catch (error) {
@@ -120,7 +130,7 @@ export default function ProductList() {
                     <div className="hero bg-base-200 min-h-80vh">
                         <div className="hero-content flex-col lg:flex-row-reverse w-3/4">
                             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
-                                <form className="card-body">
+                                <form className="card-body" ref={formRef}>
                                     <div>
                                         <label className="label">
                                             <span className="label-text">Product Name</span>
@@ -131,13 +141,16 @@ export default function ProductList() {
                                         <label className="label">
                                             <span className="label-text">Product Category</span>
                                         </label>
-                                        <details className="dropdown">
-                                            <summary className="btn w-full">Please Select</summary>
-                                            <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                                                <li><a>Item 1</a></li>
-                                                <li><a>Item 2</a></li>
-                                            </ul>
-                                        </details>
+                                        <select value={selectedId} onChange={handleChange} className="btn w-full">
+                                            <option value="" disabled className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">Select an option</option>
+                                            {options.map((option) => (
+                                                <option key={option._id} value={option._id}>
+                                                    {option.category_name}
+                                                </option>
+                                                
+                                            ))
+                                            }
+                                        </select>
                                     </div>
                                     <div className="form-control">
                                         <label className="label">
