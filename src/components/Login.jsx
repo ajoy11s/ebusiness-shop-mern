@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import toast from "react-hot-toast";
+import Resizer from "react-image-file-resizer";
 
 
 const Login = () => {
@@ -12,6 +13,10 @@ const Login = () => {
 
   const [isOpen, setIsOpen] = useState(true);
   const [isOpenReg, setIsOpenReg] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [loading, setLoading] = useState(false); // Define loading state
+  const [resizedImage, setResizedImage] = useState(null);
 
 
   const formRef = useRef();
@@ -41,6 +46,11 @@ const Login = () => {
     setIsOpenReg(!isOpenReg);
   }
 
+  const handleImageChange = (e) => {
+    setSelectedImage(e.target.files[0]);
+  };
+
+
   const handleRegisterAndDataSave = (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -54,6 +64,7 @@ const Login = () => {
     registerEmailPassword(email, password)
       .then((result) => {
         console.log(result.user);
+        handleRegisterDataInServer(name, email, password, tel, address, selectedImage);
         handleUserProfile(name, photoUrl);
         toast.success("User Registration Successful", {
           position: "top-right",
@@ -72,6 +83,87 @@ const Login = () => {
         console.log(error);
       });
   };
+
+  const handleRegisterDataInServer = async (name, email, password, tel, address, selectedImage) => {
+    if (!selectedImage) {
+      console.error("No image selected");
+      return;
+    }
+
+    //Image resize start
+    if (selectedImage) {
+      // Resize the image
+      Resizer.imageFileResizer(
+        selectedImage,
+        32, // new width
+        32, // new height
+        'JPEG', // format
+        100, // quality
+        0, // rotation
+        (uri) => {
+          setResizedImage(uri);
+        },
+        'base64' // output type
+      );
+      //setImage(URL.createObjectURL(selectedImage));
+    }
+    //Image resize end
+
+
+    const formData = new FormData();
+    formData.append('image', selectedImage);
+
+    const apikey = import.meta.env.VITE_IMAGE_BB_IMAGE_UPLOAD_API_KEY;  // Replace with your actual API key
+    console.log(apikey);
+    const uploadUrl = `https://api.imgbb.com/1/upload?key=${apikey}`;
+
+    try {
+      setLoading(true); // Set loading state before fetch
+      const response = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Image upload failed");
+      }
+      const data = await response.json();
+      setImageUrl(data.data.display_url); // Get the image URL from the response
+
+      if (data.data.display_url) {
+
+        //Save data on mongoDB Start
+        const userlist = {
+          name: name,
+          email: email,
+          password: password,
+          tel: tel,
+          address: address,
+          image_url: data.data.display_url,
+          isactive: true,
+          isdelete: false,
+          issystemadmin: false,
+          isadmin: false,
+          isgeneraluser: true
+        }
+        const response = await fetch(import.meta.env.VITE_REGISTER_USER_ADD_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userlist),
+        });
+        const resultdata = await response.json();
+        //Save data on mongoDB End
+
+      }
+
+    } catch (error) {
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false); // Reset loading state
+    }
+  }
 
   return (
     <div>
@@ -131,8 +223,17 @@ const Login = () => {
                 <div className="form-control">
                   <input type="text" name="address" id="address" placeholder="Please enter your address" className="input input-bordered" required />
                 </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Upload Image</span>
+                  </label>
+                  <input
+                    type="file" onChange={handleImageChange}
+                    className="file-input file-input-bordered file-input-success w-full max-w-xs" />
+                </div>
                 <div className="form-control mt-2">
-                  <button className="btn btn-primary">Register</button>
+                  <button className="btn btn-primary" disabled={loading}>Register</button>
+                  <span>{loading ? 'Uploading and Data Save...' : ''}</span>
                 </div>
                 <div>
                   <span>Already have an account?<NavLink className="text size-3 font-bold" onClick={handleAlreadyanAccLoginBtnClick}>Login</NavLink></span>

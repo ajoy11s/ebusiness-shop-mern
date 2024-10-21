@@ -116,7 +116,7 @@ export default function CategoryList() {
                     <div className="hero bg-base-200 min-h-80vh">
                         <div className="hero-content flex-col lg:flex-row-reverse w-3/4">
                             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
-                                <form className="card-body" ref={formRef}>
+                                <form className="card-body" ref={formRef} onSubmit={handleImageUploadAndSaveData}>
                                     <div>
                                         <label className="label">
                                             <span className="label-text">Category Name</span>
