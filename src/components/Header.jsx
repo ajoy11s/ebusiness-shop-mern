@@ -1,12 +1,37 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { useContext } from "react";
+import { useContext, useEffect,useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 function Header() {
-
   const navigate = useNavigate();
   const { current_user, logOutUser } = useContext(AuthContext);
+  const [current_user_mongo, setCurrentUserMongo] = useState([]);
+  // const current_user1 = {
+  //   key1: "test",
+  //   key2: "data"
+  // };
+
+
+  // Call useEffect unconditionally
+  useEffect(() => {
+    if (current_user) {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_GET_SINGLE_LOGIN_USER}${current_user.email}`);
+          const data = await response.json();
+          setCurrentUserMongo(data);
+        } catch (error) {
+          console.error("Error:", error.message);
+        } finally {
+          console.log("finally");
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [current_user]); // Dependency array includes current_user
+
 
   const logOutButtonClick = () => {
     logOutUser();
@@ -39,13 +64,13 @@ function Header() {
               <li><NavLink to={"/"} >Home</NavLink></li>
               <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
               {
-                current_user ? (
+                current_user && current_user_mongo.email ? (
                   <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
                 ) : (
                   <></>
                 )
               }
-          </ul>
+            </ul>
           </div>
           <NavLink to={'/'}> <img
             src="/images/logo-ecommerce.png" className="w-16 h-16 rounded-xl" /></NavLink>
@@ -57,23 +82,23 @@ function Header() {
             <li><NavLink to={"/"} >Home</NavLink></li>
             <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
             {
-                current_user ? (
-                  <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
-                ) : (
-                  <></>
-                )
-              }
+              current_user && current_user_mongo.email ? (
+                <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
+              ) : (
+                <></>
+              )
+            }
           </ul>
         </div>
 
 
         <div className="navbar-end">
           {
-            current_user ? (
+            current_user && current_user_mongo.email ? (
               <>
                 <div className="flex items-center gap-2">
-                  <img src={current_user?.photoURL || "/images/user.png"} className="w-7 rounded-full" />
-                  <span>{current_user?.displayName || "No Name"}</span>
+                  <img src={current_user_mongo?.image_url || "/images/user.png"} className="w-7 rounded-full" />
+                  <span>{current_user_mongo?.name || "No Name"}</span>
                   <button onClick={logOutButtonClick} className="btn btn-outline btn-success">
                     Logout
                   </button>

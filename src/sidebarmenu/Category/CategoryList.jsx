@@ -52,8 +52,7 @@ export default function CategoryList() {
         const formData = new FormData();
         formData.append('image', selectedImage);
 
-        const apikey = import.meta.env.VITE_IMAGE_BB_IMAGE_UPLOAD_API_KEY;  // Replace with your actual API key
-        const uploadUrl = `https://api.imgbb.com/1/upload?key=${apikey}`;
+        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY; 
 
         try {
             setLoading(true); // Set loading state before fetch
