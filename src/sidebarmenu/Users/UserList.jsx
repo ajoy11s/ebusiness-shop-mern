@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import 'primeicons/primeicons.css';
+import { Link } from "react-router-dom";
 
 
 export default function UserList() {
@@ -39,7 +41,7 @@ export default function UserList() {
                     <tbody>
                         {/* row 1 */}
                         {userslist.map((users) => (
-                            <tr key={userslist.email}>
+                            <tr key={users.email}>
                                 <th>
                                     <label>
                                         <input type="checkbox" className="checkbox" />
@@ -73,8 +75,9 @@ export default function UserList() {
                                             : users.issystemadmin ? "SystemAdmin" : ""
                                 }</td>
                                 <th className="space-x-2">
-                                    <button className="btn btn-warning">Edit</button>
-                                    <button className="btn btn-error">Delete</button>
+                                    <Link onClick={() => document.getElementById('my_modal_3').showModal()}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                    <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
+                                    <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                 </th>
                             </tr>
                         ))
@@ -82,6 +85,31 @@ export default function UserList() {
                     </tbody>
                 </table>
             </div>
+
+            {/* You can open the modal using document.getElementById('ID').showModal() method */}
+
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box w-3/4">
+                    <form method="dialog" className="my-4 w-3/4">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <div className="form-control py-2 w-3/4">
+                        <input type="text" name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control py-2 w-3/4">
+                        <input type="text" name="address" id="address" placeholder="Please enter your address" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control py-2 w-3/4">
+                        <input type="tel" name="tel" id="tel" placeholder="Please enter your mobile no" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control mt-2 flex justify-center items-center">
+                        <button className="btn btn-warning w-1/2">Update</button>
+                    </div>
+                </div>
+            </dialog>
+
+
         </div>
     )
 }
