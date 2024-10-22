@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
 
 export default function UserList() {
+
+    const [userslist, setUsersList] = useState([]);
+
+    useEffect(() => {
+        fetch(import.meta.env.VITE_GET_ALL_USERS)
+            .then(res => res.json())
+            .then(data => setUsersList(data));
+
+    }, []);
+
+
     return (
         <div>
             <div className="flex flex-row justify-center py-2">
@@ -17,46 +28,57 @@ export default function UserList() {
                                     <input type="checkbox" className="checkbox" />
                                 </label>
                             </th>
-                            <th>Name</th>
-                            <th>Job</th>
-                            <th>Favorite Color</th>
+                            <th>Name/Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Role</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {/* row 1 */}
-                        <tr>
-                            <th>
-                                <label>
-                                    <input type="checkbox" className="checkbox" />
-                                </label>
-                            </th>
-                            <td>
-                                <div className="flex items-center gap-3">
-                                    <div className="avatar">
-                                        <div className="mask mask-squircle h-12 w-12">
-                                            <img
-                                                src="https://i.ibb.co.com/WvpK7VD/Ajoy-Ajoy-Paul.jpg"
-                                                alt="Avatar Tailwind CSS Component" />
+                        {userslist.map((users) => (
+                            <tr key={userslist.email}>
+                                <th>
+                                    <label>
+                                        <input type="checkbox" className="checkbox" />
+                                    </label>
+                                </th>
+                                <td>
+                                    <div className="flex items-center gap-3">
+                                        <div className="avatar">
+                                            <div className="mask mask-squircle h-12 w-12">
+                                                <img
+                                                    src={users.image_url}
+                                                    alt="Avatar Tailwind CSS Component" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold">{users.name}</div>
+                                            <div className="text-sm opacity-50">{users.address}</div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div className="font-bold">Ajoy Kumar Paul</div>
-                                        <div className="text-sm opacity-50">Web Application Developer</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                DoICT
-                                <br />
-                                <span className="badge badge-ghost badge-sm">ICT Work</span>
-                            </td>
-                            <td>Purple</td>
-                            <th className="space-x-2">
-                                <button className="btn btn-warning">Edit</button>
-                                <button className="btn btn-error">Delete</button>
-                            </th>
-                        </tr>
+                                </td>
+                                <td>
+                                    {users.email}
+                                </td>
+                                <td>{users.tel}</td>
+                                <td>{users.isactive ? "Active" : "InActive"}</td>
+                                <td>{
+                                    users.isgeneraluser
+                                        ? "User"
+                                        : users.isadmin
+                                            ? "Admin"
+                                            : users.issystemadmin ? "SystemAdmin" : ""
+                                }</td>
+                                <th className="space-x-2">
+                                    <button className="btn btn-warning">Edit</button>
+                                    <button className="btn btn-error">Delete</button>
+                                </th>
+                            </tr>
+                        ))
+                        }
                     </tbody>
                 </table>
             </div>
