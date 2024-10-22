@@ -15,7 +15,7 @@ export default function UserList() {
         document.getElementById('my_modal_3').showModal();
     };
 
-    const handleChange = (event) => {
+    const handleNameChange = (event) => {
         setNameValue(event.target.value);
     };
 
@@ -113,7 +113,7 @@ export default function UserList() {
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <div className="form-control py-2 w-full">
-                        <input type="text" onChange={handleChange} value={nameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
+                        <input type="text" onChange={handleNameChange} value={nameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
                     </div>
                     <div className="form-control py-2 w-full">
                         <input type="text" name="address" id="address" placeholder="Please enter your address" className="input input-bordered" required />
