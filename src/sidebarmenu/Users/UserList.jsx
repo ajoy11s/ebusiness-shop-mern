@@ -15,8 +15,6 @@ export default function UserList() {
     const { current_user } = useContext(AuthContext);
     const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
 
-    console.log(currentUserDataBackend);
-
     const handEditleLinkClick = (email) => {
         setSelectedEmail(email);
         document.getElementById('my_modal_3').showModal();
@@ -35,6 +33,7 @@ export default function UserList() {
 
 
     const handleUpdateDataButtonClick = async (e) => {
+        console.log(selectedEmail);
         e.preventDefault();
 
         if (nameValue.trim() === '') {
@@ -57,7 +56,7 @@ export default function UserList() {
         };
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_USERS_BY_EMAIL}${current_user.email}`, {
+            const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_USERS_BY_EMAIL}${selectedEmail}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -149,12 +148,9 @@ export default function UserList() {
                                         }</td>
                                         {users.issystemadmin ? ("") : (
                                             <th className="space-x-2">
-
                                                 <Link onClick={() => handEditleLinkClick(users.email)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
-
-
                                             </th>
                                         )
                                         }

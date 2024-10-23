@@ -27,7 +27,7 @@ export default function DashboardSidebarContent() {
                         </div>
                     )
                 }
-                <li><a>Profile</a></li>
+                <li><Link to={"/dashboard/profile"}>Profile</Link></li>
                 <li><Link onClick={logOutButtonClick}>Logout</Link></li>
             </ul>
         </div>

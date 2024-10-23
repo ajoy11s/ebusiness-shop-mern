@@ -6,7 +6,8 @@ import DashboardLayout from '../Layout/DashboardLayout'
 import MainLayout from "../Layout/MainLayout";
 import ProductList from "../sidebarmenu/Products/ProductList";
 import UserList from "../sidebarmenu/Users/UserList";
-import CategoryList from "../sidebarmenu/Category/CategoryList"
+import CategoryList from "../sidebarmenu/Category/CategoryList";
+import Profile from "../sidebarmenu/Profile/ProfileInfo";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/userlist",
                 element: <UserList />,
+            },
+            {
+                path: "/dashboard/profile",
+                element: <Profile />,
             }
         ]
     }
