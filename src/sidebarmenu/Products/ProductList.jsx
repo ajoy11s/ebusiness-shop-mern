@@ -3,8 +3,12 @@ import { useState, useContext, useEffect, createContext, useRef } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
 import { rating } from '@material-tailwind/react';
+import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
 
 export default function ProductList() {
+
+    const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData(); 
+    console.log(currentUserDataBackend);
 
     const [productlist, setProductList] = useState([]);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);

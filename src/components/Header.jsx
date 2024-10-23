@@ -7,11 +7,6 @@ function Header() {
   const navigate = useNavigate();
   const { current_user, logOutUser } = useContext(AuthContext);
   const [current_user_mongo, setCurrentUserMongo] = useState([]);
-  // const current_user1 = {
-  //   key1: "test",
-  //   key2: "data"
-  // };
-
 
   // Call useEffect unconditionally
   useEffect(() => {
