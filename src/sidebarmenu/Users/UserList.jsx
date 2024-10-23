@@ -35,7 +35,7 @@ export default function UserList() {
 
     const handleUpdateDataButtonClick = async (e) => {
         e.preventDefault();
-    
+
         if (nameValue.trim() === '') {
             alert('Name field cannot be empty!');
             return;
@@ -45,16 +45,16 @@ export default function UserList() {
             return;
         }
         if (telValue.trim() === '') {
-            alert('Tel field cannot be empty!'); 
-            return; 
+            alert('Tel field cannot be empty!');
+            return;
         }
-    
+
         const userupdatelist = {
             name: nameValue,
             address: addressValue,
             tel: telValue
         };
-    
+
         try {
             const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_USERS_BY_EMAIL}${current_user.email}`, {
                 method: 'PUT',
@@ -63,19 +63,19 @@ export default function UserList() {
                 },
                 body: JSON.stringify(userupdatelist),
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
+
             const data = await response.json();
             return data;
         } catch (error) {
             console.error('Error updating user:', error);
-           
+
         }
     };
-    
+
 
     useEffect(() => {
         fetch(import.meta.env.VITE_GET_ALL_USERS)
@@ -164,6 +164,9 @@ export default function UserList() {
                         {/* if there is a button in form, it will close the modal */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
+                    <div>
+                        <span className="label-text">Your email: {selectedEmail}</span>
+                    </div>
                     <div className="form-control py-2 w-full">
                         <input type="text" onChange={handleNameChange} value={nameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
                     </div>

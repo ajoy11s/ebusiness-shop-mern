@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useContext, useEffect, createContext, useRef } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
+import { rating } from '@material-tailwind/react';
 
 export default function ProductList() {
 
@@ -16,9 +17,9 @@ export default function ProductList() {
     const [options, setOptions] = useState([]);
     const [selectedId, setSelectedId] = useState('');
 
-  const handleChange = (event) => {
-    setSelectedId(event.target.value);
-  };
+    const handleChange = (event) => {
+        setSelectedId(event.target.value);
+    };
 
     useEffect(() => {
         fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
@@ -68,7 +69,7 @@ export default function ProductList() {
         const formData = new FormData();
         formData.append('image', selectedImage);
 
-        const uploadUrl = import.meta.env.import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
+        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
 
         try {
             setLoading(true); // Set loading state before fetch
@@ -88,8 +89,13 @@ export default function ProductList() {
                 //Save data on mongoDB Start
                 const formData = new FormData(formRef.current);
                 const productname = formData.get("product_name");
+                const productdetails = formData.get("product_details");
+                const productprice = formData.get("product_price");
                 const productlist = {
                     product_name: productname,
+                    product_details: productdetails,
+                    product_price: productprice,
+                    rating: null,
                     category_id: selectedId,
                     image_url: data.data.display_url,
                     isactive: true,
@@ -130,30 +136,32 @@ export default function ProductList() {
                             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-sm">
                                 <form className="card-body" ref={formRef}>
                                     <div>
-                                        <label className="label">
-                                            <span className="label-text">Product Name</span>
-                                        </label>
+                                        <span className="label-text">Product Name</span>
                                         <input type="text" name="product_name" id="product_name" className="input input-bordered input-secondary w-full max-w-xs" required />
                                     </div>
+                                    <div>
+                                        <span className="label-text">Product Details</span>
+                                        <input type="text" name="product_details" id="product_details" className="input input-bordered input-secondary w-full max-w-xs" required />
+                                    </div>
+                                    <div>
+                                        <span className="label-text">Price</span>
+                                        <input type="text" name="product_price" id="product_price" className="input input-bordered input-secondary w-full max-w-xs" required />
+                                    </div>
                                     <div className="form-control">
-                                        <label className="label">
-                                            <span className="label-text">Product Category</span>
-                                        </label>
+                                        <span className="label-text">Product Category</span>
                                         <select value={selectedId} onChange={handleChange} className="btn w-full">
                                             <option value="" disabled className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">Select an option</option>
                                             {options.map((option) => (
                                                 <option key={option._id} value={option._id}>
                                                     {option.category_name}
                                                 </option>
-                                                
+
                                             ))
                                             }
                                         </select>
                                     </div>
                                     <div className="form-control">
-                                        <label className="label">
-                                            <span className="label-text">Upload Image</span>
-                                        </label>
+                                        <span className="label-text">Upload Image</span>
                                         <input
                                             type="file" onChange={handleImageChange}
                                             className="file-input file-input-bordered file-input-success w-full max-w-xs" />
