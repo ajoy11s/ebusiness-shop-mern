@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../provider/AuthProvider";
 import Header from '../../components/Header';
 import Banner from '../../components/Banner';
-import DashboardSidebarContent from '../../components/DashboardSidebarContent';
 
 const AllProducts = () => {
     const { _id } = useParams();
