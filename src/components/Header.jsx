@@ -57,7 +57,7 @@ function Header() {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow font-semibold text-xl text-black">
               <li><NavLink to={"/"} >Home</NavLink></li>
-              <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
+              <li><NavLink to={"/allcategory"} >All Category</NavLink></li>
               {
                 current_user && current_user_mongo.email ? (
                   <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>
@@ -75,7 +75,7 @@ function Header() {
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 text-sm text-black">
             <li><NavLink to={"/"} >Home</NavLink></li>
-            <li><NavLink to={"/allproducts"} >All Products</NavLink></li>
+            <li><NavLink to={"/allcategory"} >All Category</NavLink></li>
             {
               current_user && current_user_mongo.email ? (
                 <li><NavLink to={"/dashboard"} >Dashboard</NavLink></li>

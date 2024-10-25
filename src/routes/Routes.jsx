@@ -8,6 +8,7 @@ import ProductList from "../sidebarmenu/Products/ProductList";
 import UserList from "../sidebarmenu/Users/UserList";
 import CategoryList from "../sidebarmenu/Category/CategoryList";
 import Profile from "../sidebarmenu/Profile/ProfileInfo";
+import AllCategory from "../components/AllCategory";
 
 const router = createBrowserRouter([
     {
@@ -20,10 +21,11 @@ const router = createBrowserRouter([
                 element: <Login />,
             },
             {
-                path: "/allproducts",
-                element: <PrivateRoute>
-                    <AllProducts />
-                </PrivateRoute>,
+                path: "/allcategory",
+                element: <AllCategory />,
+                // element: <PrivateRoute>
+                //     <AllProducts />
+                // </PrivateRoute>,
             }
         ]
     },
