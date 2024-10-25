@@ -5,14 +5,26 @@ import { AuthContext } from "../provider/AuthProvider";
 const AllCategory = () => {
 
     const [categoris, setCategoris] = useState([]);
+    const [selectedID, setSelectedID] = useState('');
     const { current_user } = useContext(AuthContext);
 
     useEffect(() => {
         fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
             .then(res => res.json())
             .then(data => setCategoris(data));
-
     }, []);
+
+    const handleViewProductBtnClick = async (categoryid) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_GET_ALL_PRODUCT_DATA_BY_CATEGORI_ID}${categoryid}`);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error("Error:", error.message);
+        } finally {
+            console.log("finally");
+        }
+    }
 
 
     return (
@@ -30,12 +42,12 @@ const AllCategory = () => {
                             </figure>
                             <div className="card flex flex-row justify-center items-center w-full p-2 space-x-4">
                                 <h2 className="card-title">{categorisall.category_name}</h2>
-                                <button className="btn btn-outline btn-success">
-                                <img
-                                    src={categorisall.image_url}
-                                    alt="Shoes"
-                                    className="rounded-xl w-6 h-6" />
-                                    View Products</button>
+                                <button className="btn btn-outline btn-success" onClick={() => handleViewProductBtnClick(categorisall._id)}>
+                                    <img
+                                        src={categorisall.image_url}
+                                        alt="Shoes"
+                                        className="rounded-xl w-6 h-6" />
+                                    View {categorisall.category_name}</button>
                             </div>
                         </div>
                     )
