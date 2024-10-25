@@ -7,7 +7,7 @@ import Banner from '../components/Banner';
 import Footer from '../components/Footer';
 import DashboardSidebarContent from '../components/DashboardSidebarContent'
 import { AuthContext } from "../provider/AuthProvider";
-import AllProducts from "../components/AllProducts";
+import AllProducts from "../components/AllProduct/AllProducts";
 
 const DashboardLayout = () => {
     const { current_user } = useContext(AuthContext);

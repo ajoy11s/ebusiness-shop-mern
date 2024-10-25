@@ -1,14 +1,22 @@
 import React from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../provider/AuthProvider";
+import { AuthContext } from "../../provider/AuthProvider";
 
 const AllProducts = () => {
-
+    const { _id } = useParams();
     const [products, setProducts] = useState([]);
     const { current_user } = useContext(AuthContext);
 
+
     useEffect(() => {
-        fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
+        const currentUrl = window.location.href;
+        const urlParams = currentUrl.split('/').pop();
+        const decodedDataString = decodeURIComponent(urlParams);
+        const data = JSON.parse(decodedDataString);
+        const id = data._id
+        
+        fetch(`${import.meta.env.VITE_GET_ALL_PRODUCT_DATA_BY_CATEGORI_ID}${id}`)
             .then(res => res.json())
             .then(data => setProducts(data));
 

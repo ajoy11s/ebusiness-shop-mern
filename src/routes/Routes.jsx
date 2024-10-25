@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from '../components/Login';
-import AllProducts from '../components/AllProducts';
+import AllProducts from '../components/AllProduct/AllProducts';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../Layout/DashboardLayout'
 import MainLayout from "../Layout/MainLayout";
@@ -27,7 +27,13 @@ const router = createBrowserRouter([
                 //     <AllProducts />
                 // </PrivateRoute>,
             }
+            
         ]
+    },{
+        
+            path: "/categorywiseproduct/:_id",
+            element: <AllProducts />,
+        
     },
     {
         path: "/dashboard",
