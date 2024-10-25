@@ -9,6 +9,7 @@ import UserList from "../sidebarmenu/Users/UserList";
 import CategoryList from "../sidebarmenu/Category/CategoryList";
 import Profile from "../sidebarmenu/Profile/ProfileInfo";
 import AllCategory from "../components/AllCategory/AllCategory";
+import AllProductDetails from "../components/AllProduct/AllProductDetails"
 
 const router = createBrowserRouter([
     {
@@ -27,13 +28,18 @@ const router = createBrowserRouter([
                 //     <AllProducts />
                 // </PrivateRoute>,
             }
-            
+
         ]
-    },{
-        
-            path: "/categorywiseproduct/:_id",
-            element: <AllProducts />,
-        
+    }, {
+
+        path: "/categorywiseproduct/:_id",
+        element: <AllProducts />,
+
+    }, {
+
+        path: "/productdetails/:_id",
+        element: <AllProductDetails />,
+
     },
     {
         path: "/dashboard",
