@@ -31,7 +31,9 @@ const AllProductDetails = () => {
                     const data = await response.json();
                     console.log(data);
                     setCurrentUserMongo(data);
-                    document.getElementById('my_modal_3').showModal();
+                    if (current_user_mongo) {
+                        document.getElementById('my_modal_3').showModal();
+                    }
                 } catch (error) {
                     console.error("Error:", error.message);
                 } finally {
@@ -58,7 +60,44 @@ const AllProductDetails = () => {
             alert('Comments field cannot be empty!');
             return;
         }
+
+        const pproductbuylist = {
+            product_id: _id,
+            email: current_user.email,
+            img_url: product.img_url,
+            product_name: product.product_name,
+            product_details: product.product_details,
+            product_price: product.product_price,
+            buyer_comments: commentsValue,
+            rating: null,
+            isactive: true,
+            isdelete: false            
+        };
+
+        try {
+            const response = await fetch(import.meta.env.VITE_ADD_CUSTOMERS_BUY_PRODUCT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pproductbuylist),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            alert('Buy product successfully');
+            setCommentsValue("");
+            document.getElementById('my_modal_3').style.display = 'none';
+            return data;
+        } catch (error) {
+            console.error('Error data save:', error);
+
+        }
     }
+
 
     return (
         <div className="text-center m-1 bg-slat-100 w-full items-center">
