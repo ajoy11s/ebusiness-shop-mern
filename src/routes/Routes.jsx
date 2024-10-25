@@ -8,7 +8,7 @@ import ProductList from "../sidebarmenu/Products/ProductList";
 import UserList from "../sidebarmenu/Users/UserList";
 import CategoryList from "../sidebarmenu/Category/CategoryList";
 import Profile from "../sidebarmenu/Profile/ProfileInfo";
-import AllCategory from "../components/AllCategory";
+import AllCategory from "../components/AllCategory/AllCategory";
 
 const router = createBrowserRouter([
     {

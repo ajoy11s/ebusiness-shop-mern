@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../provider/AuthProvider";
+import { AuthContext } from "../../provider/AuthProvider";
 
 const AllCategory = () => {
 
