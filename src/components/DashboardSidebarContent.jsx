@@ -27,7 +27,7 @@ export default function DashboardSidebarContent() {
                         </div>
                     )
                 }
-                <li><Link to={"/dashboard/buyourlist"} className="pi-shopping-cart">Buy product list</Link></li>
+                <li><Link to={"/dashboard/buyourlist"} className="pi-shopping-cart">My Wishlist</Link></li>
                 <li><Link to={"/dashboard/profile"} className="pi pi-user-edit">Profile</Link></li>
                 <li><Link onClick={logOutButtonClick} className="pi pi-sign-out">Logout</Link></li>
             </ul>

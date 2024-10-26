@@ -10,29 +10,35 @@ export default function BuyOurList() {
   const { current_user } = useContext(AuthContext);
   const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
 
-  console.log(current_user);
-  console.log(currentUserDataBackend);
-  const nn = "jay@gmail.com";
+  useEffect(() => {
+    if (current_user || currentUserDataBackend) {
+      setSelectedEmail(current_user.email);
+    }
+  }, [current_user, currentUserDataBackend]);
+
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_GET_ALL_PRODUCT_BUY_CUSTOMER}${nn}`)
+    if (selectedEmail) {
+      fetch(`${import.meta.env.VITE_GET_ALL_PRODUCT_BUY_CUSTOMER}${selectedEmail}`)
       .then(res => res.json())
-      .then(data => setBuyList(data));
+      .then(data => setBuyList(JSON.stringify(data)));
+    }
 
   }, []);
 
-
   return (
     <div>
-       <div className="flex flex-row justify-center py-2">
-                <h2 className="text-green-600 font-semibold text-xl underline">Buy Product List</h2>
-            </div>
+      <div className="flex flex-row justify-center py-2">
+        <h2 className="text-green-600 font-semibold text-xl underline">Buy Product List</h2>
+      </div>
       {
         current_user && currentUserDataBackend && (
           <div className="overflow-x-auto">
             <table className="table">
-              {/* head */}
               <thead>
+                <div>
+                  <span className="label-text">Email: {currentUserDataBackend.email}</span>
+                </div>
                 <tr className="bg-slate-200 font-semibold text-green-600 text-sm">
                   <th>
                     <label>
@@ -47,7 +53,7 @@ export default function BuyOurList() {
                 </tr>
               </thead>
               <tbody>
-                {buylist.map((buylists) => (
+                {buylist && buylist.map((buylists) => (
                   <tr key={buylists._id}>
                     <th>
                       <label>

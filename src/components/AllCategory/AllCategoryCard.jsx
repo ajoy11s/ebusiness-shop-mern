@@ -17,20 +17,6 @@ const AllCategoryCard = ({ecategoridataprop}) => {
         window.open(newTabUrl, '_blank');
       };
 
-
-    // const handleViewProductBtnClick = async (categoryid) => {
-    //     try {
-    //         const response = await fetch(`${import.meta.env.VITE_GET_ALL_PRODUCT_DATA_BY_CATEGORI_ID}${categoryid}`);
-    //         const data = await response.json();
-    //         console.log(data);
-    //     } catch (error) {
-    //         console.error("Error:", error.message);
-    //     } finally {
-    //         console.log("finally");
-    //     }
-    // }
-
-
     return (
         <div className="text-center my-2 bg-base-200">
             <div className="grid grid-cols-1 md:grid-cols-4 px-4">

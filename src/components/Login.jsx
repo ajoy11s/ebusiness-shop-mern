@@ -28,7 +28,6 @@ const Login = () => {
 
     signInEmailPassword(emaillogin, passwordlogin)
       .then((result) => {
-        console.log("Data User:" + JSON.stringify(result.user));
         toast.success("Login Successful", {
           position: "top-right",
         });
@@ -63,7 +62,6 @@ const Login = () => {
     const photoUrl = "/images/user.png";
     registerEmailPassword(email, password)
       .then((result) => {
-        console.log(result.user);
         handleRegisterDataInServer(name, email, password, tel, address, selectedImage);
         handleUserProfile(name, photoUrl);
         toast.success("User Registration Successful", {
@@ -80,7 +78,7 @@ const Login = () => {
     updateUserProfile(profile)
       .then(() => { })
       .catch((error) => {
-        console.log(error);
+        //console.log(error);
       });
   };
 

@@ -129,7 +129,6 @@ export default function CategoryList() {
     };
    
     const handleUpdateDataButtonClick = async (e) => {
-        console.log(categoryIdValue);
         e.preventDefault();
 
         if (categoryNameValue.trim() === '') {

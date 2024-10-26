@@ -161,7 +161,6 @@ export default function ProductList() {
 
     const handleUpdateDataButtonClick = async (e) => {
         e.preventDefault();
-        console.log(productIdValue);
 
         if (productNameValue.trim() === '') {
             alert('Product name field cannot be empty!');

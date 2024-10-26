@@ -29,7 +29,6 @@ const AllProductDetails = () => {
                 try {
                     const response = await fetch(`${import.meta.env.VITE_GET_SINGLE_LOGIN_USER}${current_user.email}`);
                     const data = await response.json();
-                    console.log(data);
                     setCurrentUserMongo(data);
                     if (current_user_mongo) {
                         document.getElementById('my_modal_3').showModal();
@@ -37,7 +36,7 @@ const AllProductDetails = () => {
                 } catch (error) {
                     console.error("Error:", error.message);
                 } finally {
-                    console.log("finally");
+                    //console.log("finally");
                 }
             };
 

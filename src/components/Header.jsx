@@ -19,7 +19,7 @@ function Header() {
         } catch (error) {
           console.error("Error:", error.message);
         } finally {
-          console.log("finally");
+          //console.log("finally");
         }
       };
 

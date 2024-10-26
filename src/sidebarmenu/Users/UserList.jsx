@@ -33,7 +33,6 @@ export default function UserList() {
 
 
     const handleUpdateDataButtonClick = async (e) => {
-        console.log(selectedEmail);
         e.preventDefault();
 
         if (nameValue.trim() === '') {
