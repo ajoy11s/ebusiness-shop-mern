@@ -70,6 +70,7 @@ export default function UserList() {
 
             const data = await response.json();
             document.getElementById('my_modal_3').style.display = 'none';
+            fetchAfterDataEditItems();
             return data;
         } catch (error) {
             console.error('Error updating user:', error);
@@ -84,6 +85,12 @@ export default function UserList() {
             .then(data => setUsersList(data));
 
     }, []);
+
+    const fetchAfterDataEditItems = async () => {
+        fetch(import.meta.env.VITE_GET_ALL_USERS)
+            .then(res => res.json())
+            .then(data => setUsersList(data));
+    };
 
 
     return (
@@ -150,8 +157,7 @@ export default function UserList() {
                                         {users.issystemadmin ? ("") : (
                                             <th className="space-x-2">
                                                 <Link onClick={() => handEditleLinkClick(users.email)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
-                                                <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
-                                                <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                             </th>
                                         )
                                         }

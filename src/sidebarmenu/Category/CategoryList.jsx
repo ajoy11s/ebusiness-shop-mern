@@ -9,6 +9,8 @@ export default function CategoryList() {
     const formRef = useRef();
     const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
     const { current_user } = useContext(AuthContext);
+    const [categoryIdValue, setCategoryIdValue] = useState('');
+    const [categoryNameValue, setCategoryNameValue] = useState('');
 
 
     const handleAddCategoryFormHideShow = () => {
@@ -110,6 +112,60 @@ export default function CategoryList() {
 
     }, []);
 
+    const fetchAfterDataEditDeleteItems = async () => {
+        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
+        .then(res => res.json())
+        .then(data => setCategoryList(data));
+    };
+
+    //Start edit Category code
+    const handleEditCategoryLinkClick = (id) => {
+        setCategoryIdValue(id);
+        document.getElementById('my_modal_3').showModal();
+    };
+
+    const handleCategoryNameChange = (event) => {
+        setCategoryNameValue(event.target.value);
+    };
+   
+    const handleUpdateDataButtonClick = async (e) => {
+        console.log(categoryIdValue);
+        e.preventDefault();
+
+        if (categoryNameValue.trim() === '') {
+            alert('Category name field cannot be empty!');
+            return;
+        }
+        
+        const categoryupdatelist = {
+            category_name: categoryNameValue
+        };
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_CATEGORY_NAME_BY_ID}${categoryIdValue}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(categoryupdatelist),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            document.getElementById('my_modal_3').style.display = 'none';
+            fetchAfterDataEditDeleteItems();
+            return data;
+        } catch (error) {
+            console.error('Error updating user:', error);
+
+        }
+    };
+
+    //End edit Category code
+
 
     return (
         <div>
@@ -180,7 +236,7 @@ export default function CategoryList() {
                                                         <div className="mask mask-squircle h-12 w-12">
                                                             <img
                                                                 src={categories.image_url}
-                                                                alt="Avatar Tailwind CSS Component" />
+                                                                alt="Image Component" />
                                                         </div>
                                                     </div>
 
@@ -191,7 +247,7 @@ export default function CategoryList() {
                                             </td>
 
                                             <th className="space-x-2">
-                                                <Link> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link onClick={() => handleEditCategoryLinkClick(categories._id)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                             </th>
@@ -205,7 +261,20 @@ export default function CategoryList() {
                     )
                 )
             }
-
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box" style={{ width: '35%' }}>
+                    <form method="dialog" className="my-4 w-full">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <div className="form-control py-2 w-full">
+                        <input type="text" onChange={handleCategoryNameChange} value={categoryNameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control mt-2 flex justify-center items-center w-full">
+                        <button className="btn btn-warning w-1/2" onClick={handleUpdateDataButtonClick}>Update</button>
+                    </div>
+                </div>
+            </dialog>
         </div>
     )
 }
