@@ -1,11 +1,14 @@
 import React from 'react';
-import { useState,useRef,useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
+import { AuthContext } from "../../provider/AuthProvider";
+import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
 
 export default function CategoryList() {
     const formRef = useRef();
     const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
+    const { current_user } = useContext(AuthContext);
 
 
     const handleAddCategoryFormHideShow = () => {
@@ -17,6 +20,8 @@ export default function CategoryList() {
     const [imageUrl, setImageUrl] = useState('');
     const [loading, setLoading] = useState(false); // Define loading state
     const [resizedImage, setResizedImage] = useState(null);
+    const [categoryList, setCategoryList] = useState(null);
+    const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
 
     const handleImageChange = (e) => {
         setSelectedImage(e.target.files[0]);
@@ -24,7 +29,7 @@ export default function CategoryList() {
 
     const handleImageUploadAndSaveData = async (event) => {
         event.preventDefault();
-        
+
         if (!selectedImage) {
             console.error("No image selected");
             return;
@@ -43,8 +48,8 @@ export default function CategoryList() {
                 (uri) => {
                     setResizedImage(uri);
                 },
-                'base64' 
-            );          
+                'base64'
+            );
         }
         //Image resize end
 
@@ -52,7 +57,7 @@ export default function CategoryList() {
         const formData = new FormData();
         formData.append('image', selectedImage);
 
-        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY; 
+        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
 
         try {
             setLoading(true); // Set loading state before fetch
@@ -68,10 +73,10 @@ export default function CategoryList() {
             const data = await response.json();
             setImageUrl(data.data.display_url); // Get the image URL from the response
             if (data.data.display_url) {
-               
-            //Save data on mongoDB Start
-            const formData = new FormData(formRef.current);
-            const category_name = formData.get("category_name");
+
+                //Save data on mongoDB Start
+                const formData = new FormData(formRef.current);
+                const category_name = formData.get("category_name");
 
                 const categorylist = {
                     category_name: category_name,
@@ -87,7 +92,7 @@ export default function CategoryList() {
                     body: JSON.stringify(categorylist),
                 });
                 const resultdata = await response.json();
-            //Save data on mongoDB End
+                //Save data on mongoDB End
 
             }
         } catch (error) {
@@ -98,8 +103,13 @@ export default function CategoryList() {
     };
     // Image upload code end
 
+    useEffect(() => {
+        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
+            .then(res => res.json())
+            .then(data => setCategoryList(data));
 
-    
+    }, []);
+
 
     return (
         <div>
@@ -139,33 +149,60 @@ export default function CategoryList() {
                         </div>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="table">
-                            {/* head */}
-                            <thead>
-                                <tr className="bg-slate-200 font-semibold text-green-600 text-sm">
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Job</th>
-                                    <th>Favorite Color</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* row 1 */}
-                                <tr className="hover">
-                                    <th>1</th>
-                                    <td>Cy Ganderton</td>
-                                    <td>Quality Control Specialist</td>
-                                    <td>Blue</td>
-                                    <td className="space-x-2">
-                                        <button className="btn btn-warning">Edit</button>
-                                        <button className="btn btn-error">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
+                        <div className="overflow-x-auto">
+                            <table className="table">
+                                {/* head */}
+                                <thead>
+                                    <tr className="bg-slate-200 font-semibold text-green-600 text-sm">
+                                        <th>
+                                            <label>
+                                                <input type="checkbox" className="checkbox" />
+                                            </label>
+                                        </th>
+                                        <th>Category Image</th>
+                                        <th>Category Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* row 1 */}
+                                    {categoryList.map((categories) => (
+                                        <tr key={categories._id}>
+                                            <th>
+                                                <label>
+                                                    <input type="checkbox" className="checkbox" />
+                                                </label>
+                                            </th>
+                                            <td>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="avatar">
+                                                        <div className="mask mask-squircle h-12 w-12">
+                                                            <img
+                                                                src={categories.image_url}
+                                                                alt="Avatar Tailwind CSS Component" />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {categories.category_name}
+                                            </td>
+
+                                            <th className="space-x-2">
+                                                <Link> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
+                                            </th>
+
+                                        </tr>
+                                    ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    )
                 )
             }
 

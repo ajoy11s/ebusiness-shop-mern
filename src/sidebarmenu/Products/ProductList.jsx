@@ -3,12 +3,13 @@ import { useState, useContext, useEffect, createContext, useRef } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
 import { rating } from '@material-tailwind/react';
+import { AuthContext } from "../../provider/AuthProvider";
 import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
 
 export default function ProductList() {
 
-    const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData(); 
-    console.log(currentUserDataBackend);
+    const { current_user } = useContext(AuthContext);
+    const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
 
     const [productlist, setProductList] = useState([]);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
@@ -124,6 +125,13 @@ export default function ProductList() {
     };
     // Image upload code end
 
+    useEffect(() => {
+        fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
+            .then(res => res.json())
+            .then(data => setProductList(data));
+
+    }, []);
+
     return (
         <div>
             <div className="flex flex-row justify-start py-2">
@@ -179,36 +187,69 @@ export default function ProductList() {
                         </div>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="table">
-                            {/* head */}
-                            <thead>
-                                <tr className="bg-slate-200 font-semibold text-green-600 text-sm">
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>Job</th>
-                                    <th>Favorite Color</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* row 1 */}
-                                <tr className="hover">
-                                    <th>1</th>
-                                    <td>Cy Ganderton</td>
-                                    <td>Quality Control Specialist</td>
-                                    <td>Blue</td>
-                                    <td className="space-x-2">
-                                        <button className="btn btn-warning">Edit</button>
-                                        <button className="btn btn-error">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
+                        <div className="overflow-x-auto">
+                            <table className="table">
+                                {/* head */}
+                                <thead>
+                                    <tr className="bg-slate-200 font-semibold text-green-600 text-sm">
+                                        <th>
+                                            <label>
+                                                <input type="checkbox" className="checkbox" />
+                                            </label>
+                                        </th>
+                                        <th>Product Image</th>
+                                        <th>Product Name</th>
+                                        <th>Product Price</th>
+                                        <th>Product Rating</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* row 1 */}
+                                    {productlist.map((products) => (
+                                        <tr key={products._id}>
+                                            <th>
+                                                <label>
+                                                    <input type="checkbox" className="checkbox" />
+                                                </label>
+                                            </th>
+                                            <td>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="avatar">
+                                                        <div className="mask mask-squircle h-12 w-12">
+                                                            <img
+                                                                src={products.image_url}
+                                                                alt="Avatar Tailwind CSS Component" />
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {products.product_name}
+                                            </td>
+                                            <td>
+                                                {products.product_price}
+                                            </td>
+                                            <td>
+                                                {products.rating}
+                                            </td>
+                                            <th className="space-x-2">
+                                                <Link> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
+                                            </th>
+
+                                        </tr>
+                                    ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    )
+
                 )
-
-
             }
 
         </div>

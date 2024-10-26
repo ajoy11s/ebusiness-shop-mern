@@ -69,6 +69,7 @@ export default function UserList() {
             }
 
             const data = await response.json();
+            document.getElementById('my_modal_3').style.display = 'none';
             return data;
         } catch (error) {
             console.error('Error updating user:', error);
