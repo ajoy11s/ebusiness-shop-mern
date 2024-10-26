@@ -9,7 +9,8 @@ import UserList from "../sidebarmenu/Users/UserList";
 import CategoryList from "../sidebarmenu/Category/CategoryList";
 import Profile from "../sidebarmenu/Profile/ProfileInfo";
 import AllCategory from "../components/AllCategory/AllCategory";
-import AllProductDetails from "../components/AllProduct/AllProductDetails"
+import AllProductDetails from "../components/AllProduct/AllProductDetails";
+import BuyOurList from "../sidebarmenu/BuyList/BuyOurList"
 
 const router = createBrowserRouter([
     {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
             {
                 path: "/dashboard/userlist",
                 element: <UserList />,
+            }, 
+            {
+                path: "/dashboard/buyourlist",
+                element: <BuyOurList />,
             },
             {
                 path: "/dashboard/profile",

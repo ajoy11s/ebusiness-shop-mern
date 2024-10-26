@@ -27,6 +27,7 @@ export default function DashboardSidebarContent() {
                         </div>
                     )
                 }
+                <li><Link to={"/dashboard/buyourlist"}>Buy product list</Link></li>
                 <li><Link to={"/dashboard/profile"}>Profile</Link></li>
                 <li><Link onClick={logOutButtonClick}>Logout</Link></li>
             </ul>

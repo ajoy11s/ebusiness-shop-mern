@@ -163,8 +163,29 @@ export default function CategoryList() {
 
         }
     };
-
     //End edit Category code
+
+    //Start delete category code
+    const handleDeleteCategoryLinkClick = async (_id) => {
+        try {
+            const url = `${import.meta.env.VITE_DELETE_SINGLE_CATEGORY_NAME_BY_ID}${_id}`;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                // Optionally, handle the response here if needed
+                fetchAfterDataEditDeleteItems();
+            } else {
+                const errorMessage = await response.json(); // Get error details if needed
+                console.error('Failed to delete item:', errorMessage);
+            }
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    };
+    
+    //End delete category code
 
 
     return (
@@ -248,7 +269,7 @@ export default function CategoryList() {
 
                                             <th className="space-x-2">
                                                 <Link onClick={() => handleEditCategoryLinkClick(categories._id)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
-                                                <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link onClick={() => handleDeleteCategoryLinkClick(categories._id)}> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                             </th>
 

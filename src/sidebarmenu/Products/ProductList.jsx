@@ -1,8 +1,7 @@
 import React from 'react';
-import { useState, useContext, useEffect, createContext, useRef } from "react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
-import { rating } from '@material-tailwind/react';
 import { AuthContext } from "../../provider/AuthProvider";
 import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
 
@@ -10,6 +9,10 @@ export default function ProductList() {
 
     const { current_user } = useContext(AuthContext);
     const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
+    const [productIdValue, setProductIdValue] = useState('');
+    const [productNameValue, setProductNameValue] = useState('');
+    const [productDetailsValue, setProductDetailsValue] = useState('');
+    const [productPriceValue, setProductPriceValue] = useState('');
 
     const [productlist, setProductList] = useState([]);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
@@ -115,6 +118,7 @@ export default function ProductList() {
                 });
                 const resultdata = await response.json();
                 //Save data on mongoDB End
+                fetchAfterDataEditDeleteItems();
 
             }
         } catch (error) {
@@ -131,6 +135,78 @@ export default function ProductList() {
             .then(data => setProductList(data));
 
     }, []);
+
+    const fetchAfterDataEditDeleteItems = async () => {
+        fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
+        .then(res => res.json())
+        .then(data => setProductList(data));
+    };
+
+
+    //Start edit Category code
+    const handleEditProductLinkClick = (id) => {
+        setProductIdValue(id);
+        document.getElementById('my_modal_3').showModal();
+    };
+
+    const handleProductNameChange = (event) => {
+        setProductNameValue(event.target.value);
+    };
+    const handleProductDetailsChange = (event) => {
+        setProductDetailsValue(event.target.value);
+    };
+    const handleProductPriceChange = (event) => {
+        setProductPriceValue(event.target.value);
+    };
+
+    const handleUpdateDataButtonClick = async (e) => {
+        e.preventDefault();
+        console.log(productIdValue);
+
+        if (productNameValue.trim() === '') {
+            alert('Product name field cannot be empty!');
+            return;
+        }
+        if (productDetailsValue.trim() === '') {
+            alert('Product details field cannot be empty!');
+            return;
+        }
+        if (productPriceValue.trim() === '') {
+            alert('Product price field cannot be empty!');
+            return;
+        }
+
+        const productupdatelist = {
+            product_name: productNameValue,
+            product_details: productDetailsValue,
+            product_pricef: productPriceValue
+        };
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_PRODUCT_BY_ID}${productIdValue}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productupdatelist),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            document.getElementById('my_modal_3').style.display = 'none';
+            fetchAfterDataEditDeleteItems();
+            return data;
+        } catch (error) {
+            console.error('Error updating user:', error);
+
+        }
+    };
+    //End edit Category code
+
+
 
     return (
         <div>
@@ -236,7 +312,7 @@ export default function ProductList() {
                                                 {products.rating}
                                             </td>
                                             <th className="space-x-2">
-                                                <Link> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link onClick={() => handleEditProductLinkClick(products._id)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                             </th>
@@ -252,6 +328,26 @@ export default function ProductList() {
                 )
             }
 
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box" style={{ width: '35%' }}>
+                    <form method="dialog" className="my-4 w-full">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <div className="form-control py-2 w-full">
+                        <input type="text" onChange={handleProductNameChange} value={productNameValue} name="productname" id="productname" placeholder="Please enter product name" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control py-2 w-full">
+                        <input type="text" onChange={handleProductDetailsChange} value={productDetailsValue} name="productdetails" id="productdetails" placeholder="Please enter product details" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control py-2 w-full">
+                        <input type="tel" onChange={handleProductPriceChange} value={productPriceValue} name="productprice" id="productprice" placeholder="Please enter product price" className="input input-bordered" required />
+                    </div>
+                    <div className="form-control mt-2 flex justify-center items-center w-full">
+                        <button className="btn btn-warning w-1/2" onClick={handleUpdateDataButtonClick}>Update</button>
+                    </div>
+                </div>
+            </dialog>
         </div>
     )
 }

@@ -6,7 +6,7 @@ const Banner = () => {
             <div
                 className="hero min-h-72"
                 style={{
-                    backgroundImage: "url(https://img.daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.webp)",
+                    backgroundImage: "url(/images/online-shop-banner.png)",
                 }}>
                 <div className="hero-overlay bg-opacity-60"></div>
                 <div className="hero-content text-neutral-content text-center">
