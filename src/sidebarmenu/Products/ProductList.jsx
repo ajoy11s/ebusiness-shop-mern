@@ -138,8 +138,8 @@ export default function ProductList() {
 
     const fetchAfterDataEditDeleteItems = async () => {
         fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
-        .then(res => res.json())
-        .then(data => setProductList(data));
+            .then(res => res.json())
+            .then(data => setProductList(data));
     };
 
 
@@ -179,11 +179,18 @@ export default function ProductList() {
         const productupdatelist = {
             product_name: productNameValue,
             product_details: productDetailsValue,
-            product_pricef: productPriceValue
+            product_price: productPriceValue
         };
 
+        if (!productupdatelist.product_name || !productupdatelist.product_price || !productupdatelist.product_details) {
+            console.error('Product name,details and price are required');
+            return;
+        }
+
         try {
-            const response = await fetch(`${import.meta.env.VITE_UPDATE_SINGLE_PRODUCT_BY_ID}${productIdValue}`, {
+            const url = `${import.meta.env.VITE_UPDATE_SINGLE_PRODUCT_BY_ID}${productIdValue}`;
+            
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -200,9 +207,9 @@ export default function ProductList() {
             fetchAfterDataEditDeleteItems();
             return data;
         } catch (error) {
-            console.error('Error updating user:', error);
-
+            console.error('Error updating product:', error);
         }
+
     };
     //End edit Category code
 

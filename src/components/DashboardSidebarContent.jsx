@@ -22,14 +22,14 @@ export default function DashboardSidebarContent() {
                     current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
                         <div>
                             <li><NavLink to={"/dashboard/userlist"} className="pi pi-users" style={{ fontSize: '1rem' }}>All Users</NavLink></li>
-                            <li><NavLink to={"/dashboard/categorylist"} className="pi pi-users">All Categories</NavLink></li>
-                            <li><NavLink to={"/dashboard/productlist"} className="pi pi-users">All Products</NavLink></li>
+                            <li><NavLink to={"/dashboard/categorylist"} className="pi-objects-column">All Categories</NavLink></li>
+                            <li><NavLink to={"/dashboard/productlist"} className="pi pi-building">All Products</NavLink></li>
                         </div>
                     )
                 }
-                <li><Link to={"/dashboard/buyourlist"}>Buy product list</Link></li>
-                <li><Link to={"/dashboard/profile"}>Profile</Link></li>
-                <li><Link onClick={logOutButtonClick}>Logout</Link></li>
+                <li><Link to={"/dashboard/buyourlist"} className="pi-shopping-cart">Buy product list</Link></li>
+                <li><Link to={"/dashboard/profile"} className="pi pi-user-edit">Profile</Link></li>
+                <li><Link onClick={logOutButtonClick} className="pi pi-sign-out">Logout</Link></li>
             </ul>
         </div>
 

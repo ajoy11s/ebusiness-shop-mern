@@ -244,7 +244,7 @@ export default function CategoryList() {
                                 </thead>
                                 <tbody>
                                     {/* row 1 */}
-                                    {categoryList.map((categories) => (
+                                    {categoryList && categoryList.map((categories) => (
                                         <tr key={categories._id}>
                                             <th>
                                                 <label>
