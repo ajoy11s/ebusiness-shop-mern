@@ -4,6 +4,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import toast from "react-hot-toast";
 import Resizer from "react-image-file-resizer";
+import { Helmet } from 'react-helmet-async';
 
 
 const Login = () => {
@@ -163,7 +164,6 @@ const Login = () => {
 
   return (
     <div>
-      {/* Login modal start */}
       {isOpen && (
         <div className="hero bg-base-200 min-h-80vh">
           <div className="hero-content flex-col lg:flex-row-reverse">
