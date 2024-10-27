@@ -77,19 +77,20 @@ export default function ProductList() {
         const formData = new FormData();
         formData.append('image', selectedImage);
 
-        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
+        //const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
+        const uploadUrl = "https://api.cloudinary.com/v1_1/dlgva1iee/image/upload"
 
         try {
             setLoading(true); // Set loading state before fetch
             const response = await fetch(uploadUrl, {
                 method: 'POST',
-                body: formData,
+                body: formData
             });
 
             if (!response.ok) {
                 throw new Error("Image upload failed");
             }
-
+            console.log(response.data.secure_url);
             const data = await response.json();
             setImageUrl(data.data.display_url); // Get the image URL from the response
             if (data.data.display_url) {
