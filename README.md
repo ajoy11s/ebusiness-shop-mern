@@ -1,8 +1,9 @@
-# React + Vite
+Project Name: eBusiness Shop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project Details: Development a beautiful websit for eBusiness Shop for online sell different type of products.Here you are firebase auth login using email and password.After login we see the we buy different type of product and my dashboard.
 
-Currently, two official plugins are available:
+Techonology covered by:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+HTML,CSS Framework: Tailwind CSS Component Library for Tailwind CSS: DaisyUI React JS,React Router DOM,Firebase auth login and mongoDB,different library of react and express ja and node js backend service etc.
+
+Live Link: https://ebusiness-shop-mern.web.app/

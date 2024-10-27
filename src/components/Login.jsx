@@ -18,10 +18,28 @@ const Login = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false); // Define loading state
   const [resizedImage, setResizedImage] = useState(null);
+  const [emailValue, setEmailValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
 
+  const handleEmailChange = (event) => {
+    setEmailValue(event.target.value);
+  };
+  const handlePasswordChange = (event) => {
+    setPasswordValue(event.target.value);
+  };
 
   const formRef = useRef();
   const handleLoginBtnClick = (evt) => {
+
+    if (emailValue.trim() === '') {
+      alert('Email field cannot be empty!');
+      return;
+  }
+  if (passwordValue.trim() === '') {
+      alert('Password field cannot be empty!');
+      return;
+  }
+
     evt.preventDefault();
     const formlog = new FormData(formRef.current);
     const emaillogin = formlog.get("emaillogin"); //send to firebase for login
@@ -35,6 +53,7 @@ const Login = () => {
         navigate("/dashboard");
       })
   }
+
 
   const handleRegisterBtnClick = () => {
     setIsOpen(!isOpen);
@@ -136,6 +155,7 @@ const Login = () => {
           password: password,
           tel: tel,
           address: address,
+          register_date: new Date(),
           image_url: data.data.display_url,
           isactive: true,
           isdelete: false,
@@ -173,13 +193,13 @@ const Login = () => {
                   <label className="label">
                     <span className="label-text">Email</span>
                   </label>
-                  <input type="email" name="emaillogin" id="emaillogin" placeholder="email" className="input input-bordered" required />
+                  <input type="email" name="emaillogin" onChange={handleEmailChange} value={emailValue} id="emaillogin" placeholder="email" className="input input-bordered" required />
                 </div>
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text">Password</span>
                   </label>
-                  <input type="password" name="passwordlogin" id="passwordlogin" placeholder="password" className="input input-bordered" required />
+                  <input type="password" name="passwordlogin" onChange={handlePasswordChange} value={passwordValue} id="passwordlogin" placeholder="password" className="input input-bordered" required />
                   <label className="label">
                     <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                   </label>

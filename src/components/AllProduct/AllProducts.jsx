@@ -42,7 +42,7 @@ const AllProducts = () => {
                                         <div className="card bg-base-200 w-72 shadow-sm" key={productsall._id}>
                                             <figure className="px-2 pt-2">
                                                 <img
-                                                    src={productsall.image_url}
+                                                    src={productsall.image_url ? productsall.image_url : "/images/all-products/no-product-image.jpg"}
                                                     alt="Shoes"
                                                     className="rounded-xl w-32 h-32" />
                                             </figure>

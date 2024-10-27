@@ -24,8 +24,8 @@ const AllCategoryCard = ({ecategoridataprop}) => {
                         <div className="card bg-base-200 w-72 shadow-sm">
                             <figure className="px-2 pt-2">
                                 <img
-                                    src={image_url}
-                                    alt="Shoes"
+                                    src={image_url ? image_url : "/images/all-products/no-product-image.jpg"}
+                                    alt="No Image"
                                     className="rounded-xl w-32 h-32" />
                             </figure>
                             <div className="card flex flex-row justify-center items-center w-full p-2 space-x-4">
