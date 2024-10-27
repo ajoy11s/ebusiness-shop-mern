@@ -69,6 +69,7 @@ const AllProductDetails = () => {
             product_price: product.product_price,
             buyer_comments: commentsValue,
             rating: null,
+            buy_date: new Date(),
             isactive: true,
             isdelete: false            
         };
