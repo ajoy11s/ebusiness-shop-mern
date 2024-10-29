@@ -4,6 +4,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
 import { AuthContext } from "../../provider/AuthProvider";
 import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
+import axios from 'axios';
 
 export default function CategoryList() {
     const formRef = useRef();
@@ -37,7 +38,7 @@ export default function CategoryList() {
             return;
         }
 
-        //Image resize start
+          //Image resize start
         if (selectedImage) {
             // Resize the image
             Resizer.imageFileResizer(
@@ -55,26 +56,15 @@ export default function CategoryList() {
         }
         //Image resize end
 
-
         const formData = new FormData();
-        formData.append('image', selectedImage);
-
-        const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
-
+        formData.append('file', selectedImage);
+        formData.append('upload_preset', 'ebusiness-shop-mern-file');
         try {
-            setLoading(true); // Set loading state before fetch
-            const response = await fetch(uploadUrl, {
-                method: 'POST',
-                body: formData,
-            });
+            setLoading(true);
+            const data = await axios.post(import.meta.env.VITE_IMAGE_CLOUDNARY_URL, formData);
+            setImageUrl(data.data.secure_url); // Get the uploaded image URL
 
-            if (!response.ok) {
-                throw new Error("Image upload failed");
-            }
-
-            const data = await response.json();
-            setImageUrl(data.data.display_url); // Get the image URL from the response
-            if (data.data.display_url) {
+            if (data.data.secure_url) {
 
                 //Save data on mongoDB Start
                 const formData = new FormData(formRef.current);
@@ -82,7 +72,7 @@ export default function CategoryList() {
 
                 const categorylist = {
                     category_name: category_name,
-                    image_url: data.data.display_url,
+                    image_url: data.data.secure_url,
                     isactive: true,
                     isdelete: false
                 }
@@ -97,11 +87,13 @@ export default function CategoryList() {
                 //Save data on mongoDB End
 
             }
-        } catch (error) {
-            console.error("Error:", error.message);
-        } finally {
-            setLoading(false); // Reset loading state
-        }
+
+        
+          } catch (error) {
+            console.error('Error uploading image:', error);
+          } finally {
+            setLoading(false);
+          }
     };
     // Image upload code end
 

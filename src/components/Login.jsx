@@ -5,6 +5,7 @@ import { AuthContext } from "../provider/AuthProvider";
 import toast from "react-hot-toast";
 import Resizer from "react-image-file-resizer";
 import { Helmet } from 'react-helmet-async';
+import axios from 'axios';
 
 
 const Login = () => {
@@ -108,45 +109,33 @@ const Login = () => {
       return;
     }
 
-    //Image resize start
-    if (selectedImage) {
-      // Resize the image
-      Resizer.imageFileResizer(
-        selectedImage,
-        32, // new width
-        32, // new height
-        'JPEG', // format
-        100, // quality
-        0, // rotation
-        (uri) => {
-          setResizedImage(uri);
-        },
-        'base64' // output type
-      );
-      //setImage(URL.createObjectURL(selectedImage));
+      //Image resize start
+      if (selectedImage) {
+        // Resize the image
+        Resizer.imageFileResizer(
+            selectedImage,
+            96, // new width
+            96, // new height
+            'JPEG', // format
+            100, // quality
+            0, // rotation
+            (uri) => {
+                setResizedImage(uri);
+            },
+            'base64'
+        );
     }
     //Image resize end
 
-
     const formData = new FormData();
-    formData.append('image', selectedImage);
-
-    const uploadUrl = import.meta.env.VITE_IMAGE_BB_URL_UPLOAD_API_KEY;
-
+    formData.append('file', selectedImage);
+    formData.append('upload_preset', 'ebusiness-shop-mern-file');
     try {
-      setLoading(true); // Set loading state before fetch
-      const response = await fetch(uploadUrl, {
-        method: 'POST',
-        body: formData,
-      });
+        setLoading(true);
+        const data = await axios.post(import.meta.env.VITE_IMAGE_CLOUDNARY_URL, formData);
+        setImageUrl(data.data.secure_url); 
 
-      if (!response.ok) {
-        throw new Error("Image upload failed");
-      }
-      const data = await response.json();
-      setImageUrl(data.data.display_url); // Get the image URL from the response
-
-      if (data.data.display_url) {
+      if (data.data.secure_url) {
 
         //Save data on mongoDB Start
         const userlist = {
@@ -156,7 +145,7 @@ const Login = () => {
           tel: tel,
           address: address,
           register_date: new Date(),
-          image_url: data.data.display_url,
+          image_url: data.data.secure_url,
           isactive: true,
           isdelete: false,
           issystemadmin: false,

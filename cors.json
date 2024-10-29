@@ -1,0 +1,8 @@
+[
+    {
+      "origin": ["https://api.imgbb.com/1/upload?key=22cfff0b1d3f8bd046f36e692cb3ff2e"],
+      "method": ["GET", "HEAD"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  
