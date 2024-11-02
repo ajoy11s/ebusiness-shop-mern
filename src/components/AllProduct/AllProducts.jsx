@@ -70,7 +70,7 @@ const AllProducts = () => {
                                             <div className="card justify-start items-start w-full p-2 text-left">
                                                 <h2 className="card-title line-clamp-1">{productsall.product_name}</h2>
                                                 <h3>Prices: {productsall.product_price ? productsall.product_price : "No prices set"}</h3>
-                                                <h3>Rating: {productsall.averageRating ? productsall.averageRating : "No rating given!"}
+                                                <h3>Rating: {productsall.averageRating ? productsall.averageRating.toFixed(2) : "No rating given!"}
                                                     {
                                                         productsall.averageRating ? (
                                                             <Rating rating={productsall.averageRating} />
