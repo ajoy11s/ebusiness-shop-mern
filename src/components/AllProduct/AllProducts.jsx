@@ -12,7 +12,6 @@ const AllProducts = () => {
     const [products, setProducts] = useState([]);
     const { current_user, productRatingByProductID } = useContext(AuthContext);
 
-
     useEffect(() => {
         const currentUrl = window.location.href;
         const urlParams = currentUrl.split('/').pop();
