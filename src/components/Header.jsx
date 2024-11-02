@@ -79,7 +79,7 @@ function Header() {
           </div>
           <NavLink to={'/'}> <img
             src="/images/logo-ecommerce.png" className="w-16 h-16 rounded-xl" /></NavLink>
-          <a className="font-bold text-green-600 text-xl from-neutral-content space-x-1 px-1">eBusiness Shop</a>
+          <a className="font-bold font-petit text-green-600 text-3xl from-neutral-content space-x-1 px-1">eBusiness Shop</a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 text-sm text-black">
