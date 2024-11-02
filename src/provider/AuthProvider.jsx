@@ -15,7 +15,7 @@ export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [current_user, SetUser] = useState(null);
   const auth = getAuth(app);
-  
+
 
   const registerEmailPassword = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
     return updateProfile(auth.currentUser, profile);
   };
 
-  const signInEmailPassword = (email,password) => {
+  const signInEmailPassword = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -41,6 +41,7 @@ const AuthProvider = ({ children }) => {
       unsubscribe();
     };
   }, []);
+
 
   return (
     <>

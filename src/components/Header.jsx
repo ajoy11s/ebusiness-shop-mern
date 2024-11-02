@@ -1,12 +1,20 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { useContext, useEffect,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 function Header() {
   const navigate = useNavigate();
   const { current_user, logOutUser } = useContext(AuthContext);
   const [current_user_mongo, setCurrentUserMongo] = useState([]);
+
+  const [theme, setTheme] = useState('light'); // Default theme
+
+  const handleThemeChange = (event) => {
+    const newTheme = event.target.checked ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   // Call useEffect unconditionally
   useEffect(() => {
@@ -65,13 +73,14 @@ function Header() {
                   <></>
                 )
               }
+              <li> <input type="checkbox" className="toggle" defaultChecked={theme === 'dark'} onChange={handleThemeChange}/>
+                <span className="ml-2">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span></li>
             </ul>
           </div>
           <NavLink to={'/'}> <img
             src="/images/logo-ecommerce.png" className="w-16 h-16 rounded-xl" /></NavLink>
           <a className="font-bold text-green-600 text-xl from-neutral-content space-x-1 px-1">eBusiness Shop</a>
         </div>
-
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 text-sm text-black">
             <li><NavLink to={"/"} >Home</NavLink></li>
@@ -83,7 +92,15 @@ function Header() {
                 <></>
               )
             }
+
           </ul>
+          <input
+            type="checkbox"
+            className="toggle"
+            defaultChecked={theme === 'dark'}
+            onChange={handleThemeChange}
+          />
+          <span className="ml-2">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>
         </div>
 
 
@@ -106,7 +123,6 @@ function Header() {
             )
           }
         </div>
-
       </div>
       {/* <Link to={"/login"} >Login</Link>
      <Link to={"/dashboard"} >Dashboard</Link> */}

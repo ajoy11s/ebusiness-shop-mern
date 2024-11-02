@@ -6,8 +6,6 @@ export default {
     'node_modules/daisyui/dist/**/*.js',
     'node_modules/react-daisyui/dist/**/*.js',
   ],
-  theme: {
-    extend: {},
-  },
+  themes: ["light", "dark", "cupcake"],
   plugins: [require('daisyui')],
 }

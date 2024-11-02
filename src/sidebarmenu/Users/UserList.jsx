@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Helmet } from 'react-helmet';
 import 'primeicons/primeicons.css';
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../provider/AuthProvider";
@@ -7,16 +8,21 @@ import { useLoginUserBackendData } from "../../components/UseLoginUserDataBacken
 export default function UserList() {
 
     const [userslist, setUsersList] = useState([]);
+    const [selectedImageUrl, setSelectedImageUrl] = useState('');
     const [selectedEmail, setSelectedEmail] = useState('');
-    const [error, setError] = useState('');
+    const [selectedName, setSelectedName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [nameValue, setNameValue] = useState('');
     const [addressValue, setAddressValue] = useState('');
     const [telValue, setTelValue] = useState('');
     const { current_user } = useContext(AuthContext);
     const { currentUserDataBackend, setCurrentUserDataBackend } = useLoginUserBackendData();
 
-    const handEditleLinkClick = (email) => {
-        setSelectedEmail(email);
+    const handEditleLinkClick = (users) => {
+        setSelectedImageUrl(users.image_url);
+        setSelectedName(users.name);
+        setSelectedEmail(users.email); selectedImageUrl
         document.getElementById('my_modal_3').showModal();
     };
 
@@ -77,28 +83,110 @@ export default function UserList() {
         }
     };
 
-
     useEffect(() => {
-        fetch(import.meta.env.VITE_GET_ALL_USERS)
-            .then(res => res.json())
-            .then(data => setUsersList(data));
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch(import.meta.env.VITE_GET_ALL_USERS);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setUsersList(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        fetchUsers();
     }, []);
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
     const fetchAfterDataEditItems = async () => {
-        fetch(import.meta.env.VITE_GET_ALL_USERS)
-            .then(res => res.json())
-            .then(data => setUsersList(data));
+        try {
+            const response = await fetch(import.meta.env.VITE_GET_ALL_USERS);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setUsersList(data);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            // Optionally set an error state if needed
+        }
     };
 
+    const handleAddAdminClick = async (email) => {
+
+        const userupdatelist = {
+            isadmin: true,
+            isgeneraluser: false
+        };
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_UPDATE_USER_ROLE_BY_EMAIL}${email}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userupdatelist),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            fetchAfterDataEditItems();
+            return data;
+        } catch (error) {
+            console.error('Error updating user:', error);
+
+        }
+    }
+
+    const handleRemoveAdminClick = async (email) => {
+
+        const userupdatelist = {
+            isadmin: false,
+            isgeneraluser: true
+        };
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_UPDATE_USER_ROLE_BY_EMAIL}${email}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userupdatelist),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            fetchAfterDataEditItems();
+            return data;
+        } catch (error) {
+            console.error('Error updating user:', error);
+
+        }
+    }
 
     return (
         <div>
+            <Helmet>
+                <title>User Panel</title>
+            </Helmet>
             <div className="flex flex-row justify-center py-2">
                 <h2 className="text-green-600 font-semibold">User List</h2>
             </div>
             {
-               current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
+                current_user && currentUserDataBackend && (currentUserDataBackend.isadmin || currentUserDataBackend.issystemadmin) && (
                     <div className="overflow-x-auto">
                         <table className="table">
                             {/* head */}
@@ -153,12 +241,25 @@ export default function UserList() {
                                                     ? "Admin"
                                                     : users.issystemadmin ? "SystemAdmin" : ""
                                         }</td>
-                                        {users.issystemadmin ? ("") : (
-                                            <th className="space-x-2">
-                                                <Link onClick={() => handEditleLinkClick(users.email)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
-                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
-                                            </th>
-                                        )
+                                        {users.issystemadmin ?
+                                            (
+                                                ""
+                                            ) : (
+
+                                                <th className="space-x-2 flex flex-row">
+                                                    <Link onClick={() => handEditleLinkClick(users)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                    {
+                                                        currentUserDataBackend.issystemadmin && users.isgeneraluser && (
+                                                            <button className="btn btn-sm btn-success" onClick={() => handleAddAdminClick(users.email)}>Add Admin</button>
+                                                        )
+                                                    }
+                                                    {
+                                                        currentUserDataBackend.issystemadmin && users.isadmin && (
+                                                            <button className="btn btn-sm btn-error" onClick={() => handleRemoveAdminClick(users.email)}>Remove Admin</button>
+                                                        )
+                                                    }
+                                                </th>
+                                            )
                                         }
                                     </tr>
                                 ))
@@ -170,13 +271,21 @@ export default function UserList() {
             }
 
             <dialog id="my_modal_3" className="modal">
-                <div className="modal-box" style={{ width: '35%' }}>
+                <div className="modal-box">
                     <form method="dialog" className="my-4 w-full">
                         {/* if there is a button in form, it will close the modal */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
+                    <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                            <img
+                                src={selectedImageUrl}
+                                alt="Avatar Tailwind CSS Component" />
+                        </div>
+                    </div>
                     <div>
-                        <span className="label-text">Your email: {selectedEmail}</span>
+                        <span className="form-control w-ful font-bold">Name: {selectedName}</span>
+                        <span className="form-control w-ful">Email: {selectedEmail}</span>
                     </div>
                     <div className="form-control py-2 w-full">
                         <input type="text" onChange={handleNameChange} value={nameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />

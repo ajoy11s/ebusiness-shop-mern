@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useState, useRef, useEffect, useContext } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
@@ -12,6 +13,7 @@ export default function CategoryList() {
     const { current_user } = useContext(AuthContext);
     const [categoryIdValue, setCategoryIdValue] = useState('');
     const [categoryNameValue, setCategoryNameValue] = useState('');
+    const [error, setError] = useState(null);
 
 
     const handleAddCategoryFormHideShow = () => {
@@ -56,7 +58,7 @@ export default function CategoryList() {
         }
         //Image resize end
 
-        const formData = new FormData();
+        const formData = new FormData(formRef.current);
         formData.append('file', selectedImage);
         formData.append('upload_preset', 'ebusiness-shop-mern-file');
         try {
@@ -67,12 +69,13 @@ export default function CategoryList() {
             if (data.data.secure_url) {
 
                 //Save data on mongoDB Start
-                const formData = new FormData(formRef.current);
+                //const formData = new FormData(formRef.current);
                 const category_name = formData.get("category_name");
 
                 const categorylist = {
                     category_name: category_name,
                     image_url: data.data.secure_url,
+                    create_date: new Date(),
                     isactive: true,
                     isdelete: false
                 }
@@ -85,6 +88,7 @@ export default function CategoryList() {
                 });
                 const resultdata = await response.json();
                 //Save data on mongoDB End
+                fetchAfterDataEditDeleteItems();
 
             }
 
@@ -98,18 +102,39 @@ export default function CategoryList() {
     // Image upload code end
 
     useEffect(() => {
-        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
-            .then(res => res.json())
-            .then(data => setCategoryList(data));
+        const fetchData = async () => {
+            try {
+                const res = await fetch(import.meta.env.VITE_CATEGORY_DATA_GET);
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await res.json();
+                setCategoryList(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        fetchData();
     }, []);
 
-    const fetchAfterDataEditDeleteItems = async () => {
-        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
-        .then(res => res.json())
-        .then(data => setCategoryList(data));
-    };
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
+const fetchAfterDataEditDeleteItems = async () => {
+    try {
+        const response = await fetch(import.meta.env.VITE_CATEGORY_DATA_GET);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCategoryList(data);
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+};
     //Start edit Category code
     const handleEditCategoryLinkClick = (id) => {
         setCategoryIdValue(id);
@@ -181,7 +206,10 @@ export default function CategoryList() {
 
     return (
         <div>
-            <div className="flex flex-row justify-start py-2">
+                  <Helmet>
+        <title>Category Add</title>
+      </Helmet>
+            <div className="flex flex-row justify-end py-2">
 
                 <button className="btn btn-outline btn-success" onClick={handleAddCategoryFormHideShow}>
                     <img
@@ -217,7 +245,7 @@ export default function CategoryList() {
                         </div>
                     </div>
                 ) : (
-                    current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
+                    current_user && currentUserDataBackend && (currentUserDataBackend.isadmin || currentUserDataBackend.issystemadmin) && (
                         <div className="overflow-x-auto">
                             <table className="table">
                                 {/* head */}
@@ -274,13 +302,13 @@ export default function CategoryList() {
                 )
             }
             <dialog id="my_modal_3" className="modal">
-                <div className="modal-box" style={{ width: '35%' }}>
+                <div className="modal-box">
                     <form method="dialog" className="my-4 w-full">
                         {/* if there is a button in form, it will close the modal */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <div className="form-control py-2 w-full">
-                        <input type="text" onChange={handleCategoryNameChange} value={categoryNameValue} name="name" id="name" placeholder="Please enter your name" className="input input-bordered" required />
+                        <input type="text" onChange={handleCategoryNameChange} value={categoryNameValue} name="name" id="name" placeholder="Please enter category name" className="input input-bordered" required />
                     </div>
                     <div className="form-control mt-2 flex justify-center items-center w-full">
                         <button className="btn btn-warning w-1/2" onClick={handleUpdateDataButtonClick}>Update</button>

@@ -11,11 +11,11 @@ function Footer() {
         <div>
              {isOpenContact && (    
                 <dialog id="my_modal_1" className="modal modal-open">
-                <div className=" bg-gray-400 text-black-500 justify-center items-center space-y-2 p-5">
+                <div className=" bg-gray-200 text-black-900 justify-center items-center space-y-2 p-5">
                     <h3 className="text-lg font-bold">Name: Ajoy Kumar Paul</h3>
                     <p>Interactive Bootcamp</p>
                     <p>Contact: ajoycse0811@gmail.com</p>
-                    <p>Service: HTML,CSS,Javascript,React JS,Android,Android Studio,SQL,SQLite etc.</p>
+                    <p>Service: HTML,CSS,Javascript,React JS,DaisyUI,Tailwinds CSS,React router dom,Android,Android Studio,mongDB,SQL,SQLite etc.</p>
                     <div className="modal-action">
                         <button onClick={toggleModalContact} className="btn btn-outline">Close</button>
                     </div>

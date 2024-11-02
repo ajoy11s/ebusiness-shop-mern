@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useState, useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Resizer from "react-image-file-resizer";
@@ -14,35 +15,53 @@ export default function ProductList() {
     const [productNameValue, setProductNameValue] = useState('');
     const [productDetailsValue, setProductDetailsValue] = useState('');
     const [productPriceValue, setProductPriceValue] = useState('');
+    const [error, setError] = useState(null);
 
     const [productlist, setProductList] = useState([]);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
-    const formRef = useRef();
-
-    const handleAddProductFormHideShow = () => {
-        setIsProductFormOpen(!isProductFormOpen);
-    }
-
     const [options, setOptions] = useState([]);
     const [selectedId, setSelectedId] = useState('');
+    const formRef = useRef();
 
-    const handleChange = (event) => {
-        setSelectedId(event.target.value);
-    };
-
-    useEffect(() => {
-        fetch(import.meta.env.VITE_CATEGORY_DATA_GET)
-            .then(res => res.json())
-            .then(data => setOptions(data));
-
-    }, []);
-
-    // Image upload code start
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
     const [loading, setLoading] = useState(false); // Define loading state
     const [resizedImage, setResizedImage] = useState(null);
 
+    const handleAddProductFormHideShow = () => {
+        setIsProductFormOpen(!isProductFormOpen);
+    }
+
+
+    const handleChange = (event) => {
+        setSelectedId(event.target.value);
+    };
+
+    //Data load for dropdown value
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch(import.meta.env.VITE_CATEGORY_DATA_GET);
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await res.json();
+                setOptions(data);
+                fetchAfterDataEditDeleteItems();
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    // Image upload code start
     const handleImageChange = (e) => {
         setSelectedImage(e.target.files[0]);
     };
@@ -55,8 +74,8 @@ export default function ProductList() {
             return;
         }
 
-          //Image resize start
-          if (selectedImage) {
+        //Image resize start
+        if (selectedImage) {
             // Resize the image
             Resizer.imageFileResizer(
                 selectedImage,
@@ -73,17 +92,17 @@ export default function ProductList() {
         }
         //Image resize end
 
-        const formData = new FormData();
+        const formData = new FormData(formRef.current);
         formData.append('file', selectedImage);
         formData.append('upload_preset', 'ebusiness-shop-mern-file');
         try {
             setLoading(true);
             const data = await axios.post(import.meta.env.VITE_IMAGE_CLOUDNARY_URL, formData);
-            setImageUrl(data.data.secure_url); 
+            setImageUrl(data.data.secure_url);
             if (data.data.secure_url) {
 
                 //Save data on mongoDB Start
-                const formData = new FormData(formRef.current);
+                //const formData = new FormData(formRef.current);
                 const productname = formData.get("product_name");
                 const productdetails = formData.get("product_details");
                 const productprice = formData.get("product_price");
@@ -94,6 +113,7 @@ export default function ProductList() {
                     rating: null,
                     category_id: selectedId,
                     image_url: data.data.secure_url,
+                    create_date: new Date(),
                     isactive: true,
                     isdelete: false
                 }
@@ -117,18 +137,23 @@ export default function ProductList() {
     };
     // Image upload code end
 
-    useEffect(() => {
-        fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
-            .then(res => res.json())
-            .then(data => setProductList(data));
-
-    }, []);
-
     const fetchAfterDataEditDeleteItems = async () => {
-        fetch(import.meta.env.VITE_PRODUCT_DATA_GET)
-            .then(res => res.json())
-            .then(data => setProductList(data));
+        setLoading(true); // Optional: Set loading state if needed
+        try {
+            const res = await fetch(import.meta.env.VITE_PRODUCT_DATA_GET);
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await res.json();
+            setProductList(data);
+        } catch (error) {
+            console.error('Failed to fetch product data:', error);
+            setError(error.message); // Optionally set an error state
+        } finally {
+            setLoading(false); // Optional: Reset loading state
+        }
     };
+
 
 
     //Start edit Category code
@@ -176,7 +201,7 @@ export default function ProductList() {
 
         try {
             const url = `${import.meta.env.VITE_UPDATE_SINGLE_PRODUCT_BY_ID}${productIdValue}`;
-            
+
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -200,11 +225,35 @@ export default function ProductList() {
     };
     //End edit Category code
 
+    //Start delete product datae code
+    const handleDeleteProductLinkClick = async (_id) => {
+        try {
+            const url = `${import.meta.env.VITE_DELETE_SINGLE_PRODUCT_NAME_BY_ID}${_id}`;
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                fetchAfterDataEditDeleteItems();
+            } else {
+                const errorMessage = await response.json();
+                console.error('Failed to delete item:', errorMessage);
+            }
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    };
+
+    //End delete product data code
+
 
 
     return (
         <div>
-            <div className="flex flex-row justify-start py-2">
+            <Helmet>
+                <title>Add Product</title>
+            </Helmet>
+            <div className="flex flex-row justify-end py-2">
 
                 <button className="btn btn-outline btn-success" onClick={handleAddProductFormHideShow}>
                     <img
@@ -257,7 +306,7 @@ export default function ProductList() {
                         </div>
                     </div>
                 ) : (
-                    current_user && currentUserDataBackend && currentUserDataBackend.isadmin && (
+                    current_user && currentUserDataBackend && (currentUserDataBackend.isadmin || currentUserDataBackend.issystemadmin) && (
                         <div className="overflow-x-auto">
                             <table className="table">
                                 {/* head */}
@@ -307,7 +356,7 @@ export default function ProductList() {
                                             </td>
                                             <th className="space-x-2">
                                                 <Link onClick={() => handleEditProductLinkClick(products._id)}> <i className="pi pi-pen-to-square" style={{ fontSize: '1.5rem' }}></i></Link>
-                                                <Link> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
+                                                <Link onClick={() => handleDeleteProductLinkClick(products._id)}> <i className="pi pi-trash" style={{ fontSize: '1.5rem' }}></i></Link>
                                                 <Link> <i className="pi pi-info-circle" style={{ fontSize: '1.5rem' }}></i></Link>
                                             </th>
 
@@ -323,7 +372,7 @@ export default function ProductList() {
             }
 
             <dialog id="my_modal_3" className="modal">
-                <div className="modal-box" style={{ width: '35%' }}>
+                <div className="modal-box">
                     <form method="dialog" className="my-4 w-full">
                         {/* if there is a button in form, it will close the modal */}
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
