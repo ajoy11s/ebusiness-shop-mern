@@ -12,7 +12,7 @@ const Banner = () => {
                 <div className="hero-content text-neutral-content text-center">
                     <div className="max-w-screen-md">
                         <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-                        <p className="mb-5 font-voltaire text-xl">
+                        <p className="mb-5 font-voltaire text-xl text-justify">
                             E-business is significant because it allows companies to reach a global audience, improve operational efficiency,
                             and gather valuable data on consumer behavior. As technology evolves, so too do the strategies and tools used in e-business,
                             making it a dynamic and essential aspect of modern commerce.
