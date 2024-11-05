@@ -10,13 +10,14 @@ import CategoryList from "../sidebarmenu/Category/CategoryList";
 import Profile from "../sidebarmenu/Profile/ProfileInfo";
 import AllCategory from "../components/AllCategory/AllCategory";
 import AllProductDetails from "../components/AllProduct/AllProductDetails";
-import BuyOurList from "../sidebarmenu/BuyList/BuyOurList"
+import BuyOurList from "../sidebarmenu/BuyList/BuyOurList";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <MainLayout></MainLayout>,
-        //errorElement: <ErrorPage></ErrorPage>,
+        errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
                 path: "/login",
