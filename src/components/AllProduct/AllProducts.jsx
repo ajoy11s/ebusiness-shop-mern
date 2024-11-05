@@ -21,6 +21,8 @@ const AllProducts = () => {
             const data = JSON.parse(decodedDataString);
             const id = data._id;
 
+            console.log("ID Check:"+id);
+
             if (!id) {
                 console.error("ID is missing from the data.");
                 return;

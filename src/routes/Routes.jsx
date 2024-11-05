@@ -12,6 +12,9 @@ import AllCategory from "../components/AllCategory/AllCategory";
 import AllProductDetails from "../components/AllProduct/AllProductDetails";
 import BuyOurList from "../sidebarmenu/BuyList/BuyOurList";
 import ErrorPage from "../ErrorPage/ErrorPage";
+import MarqueeProduct from "../components/HomeMarquee/MarqueeProduct";
+import Marquee from "react-fast-marquee";
+
 
 const router = createBrowserRouter([
     {
@@ -19,6 +22,10 @@ const router = createBrowserRouter([
         element: <MainLayout></MainLayout>,
         errorElement: <ErrorPage></ErrorPage>,
         children: [
+            {
+                path: "/",
+                element:<Marquee pauseOnHover="true" speed="50"><MarqueeProduct /></Marquee>,
+            },
             {
                 path: "/login",
                 element: <Login />,
