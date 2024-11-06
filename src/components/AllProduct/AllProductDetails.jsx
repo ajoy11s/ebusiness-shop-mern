@@ -4,6 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import Rating from './Rating';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from "../../provider/AuthProvider";
+import axios from 'axios';
 
 
 const AllProductDetails = () => {
@@ -71,6 +72,47 @@ const AllProductDetails = () => {
         setCommentsValue(event.target.value);
     };
 
+    const paymentData = async (productname,email,price) => {
+        const max = 100000;
+        const min = 1;
+        const tran_id = Math.floor(Math.random() * (max - min + 1)) + min;
+        const paymentData = {
+            totalAmount: price,
+            tran_id: tran_id,
+            successUrl: import.meta.env.VITE_ONLINE_PAYMENT_SUCCESS,
+            failUrl: import.meta.env.VITE_ONLINE_PAYMENT_FAILURE,
+            cancelUrl: import.meta.env.VITE_ONLINE_PAYMENT_CANCEL,
+            ipn_url: import.meta.env.VITE_ONLINE_PAYMENT_IPN,
+            cusName: 'AKP',
+            cusEmail: email,
+            cusPhone: '1234567890',
+            cusAddress: 'DhKhuJashore',
+            cusCity: 'DhKhuJashore',
+            cusState: 'DhKhuJashore',
+            cusPostcode: '1212',
+            cusCountry: 'Bangladesh',
+            product_name: productname,
+            product_category: 'OnlineProduct',
+            shipping_method: 'Courier'
+          };  
+          
+          const response = await fetch(import.meta.env.VITE_ONLINE_PAYMENT_LINK, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paymentData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responsePayment = await response.json();
+        const paymentLink = responsePayment.url; 
+          window.location.href = paymentLink;
+    }
+
 
     const handleConfirmBuyNowButtonClick = async (e) => {
         e.preventDefault();
@@ -79,6 +121,8 @@ const AllProductDetails = () => {
             alert('Comments field cannot be empty!');
             return;
         }
+
+       
 
         const pproductbuylist = {
             category_id: product.category_id,
@@ -109,6 +153,9 @@ const AllProductDetails = () => {
             }
 
             const data = await response.json();
+
+            paymentData(product.product_name,current_user.email,product.product_price);
+
             alert('Buy product successfully');
             setCommentsValue("");
             document.getElementById('my_modal_3').style.display = 'none';
