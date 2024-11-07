@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import Rating from './Rating';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from "../../provider/AuthProvider";
-import axios from 'axios';
+import { useLoginUserBackendData } from "../../components/UseLoginUserDataBackend";
 
 
 const AllProductDetails = () => {
@@ -12,6 +12,7 @@ const AllProductDetails = () => {
     const { _id } = useParams();
     const [product, setProduct] = useState({});
     const { current_user, logOutUser } = useContext(AuthContext);
+    const { currentUserDataBackend } = useLoginUserBackendData();
     const [current_user_mongo, setCurrentUserMongo] = useState([]);
     const [commentsValue, setCommentsValue] = useState('');
     const [loading, setLoading] = useState(true);
@@ -72,31 +73,39 @@ const AllProductDetails = () => {
         setCommentsValue(event.target.value);
     };
 
-    const paymentData = async (productname,email,price) => {
-        const max = 100000;
-        const min = 1;
-        const tran_id = Math.floor(Math.random() * (max - min + 1)) + min;
+    const paymentData = async (productname, email, price) => {
+
+        // const max = 100000;
+        // const min = 1;
+        // const tran_id = Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let tran_id = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 12; i++) {
+            tran_id += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
         const paymentData = {
             totalAmount: price,
             tran_id: tran_id,
-            successUrl: import.meta.env.VITE_ONLINE_PAYMENT_SUCCESS,
+            successUrl: `${import.meta.env.VITE_ONLINE_PAYMENT_SUCCESS}${tran_id}`,
             failUrl: import.meta.env.VITE_ONLINE_PAYMENT_FAILURE,
             cancelUrl: import.meta.env.VITE_ONLINE_PAYMENT_CANCEL,
-            ipn_url: import.meta.env.VITE_ONLINE_PAYMENT_IPN,
-            cusName: 'AKP',
+            cusName: currentUserDataBackend.name,
             cusEmail: email,
-            cusPhone: '1234567890',
-            cusAddress: 'DhKhuJashore',
-            cusCity: 'DhKhuJashore',
-            cusState: 'DhKhuJashore',
+            cusPhone: currentUserDataBackend.tel,
+            cusAddress: currentUserDataBackend.address,
+            cusCity: currentUserDataBackend.address,
+            cusState: currentUserDataBackend.address,
             cusPostcode: '1212',
             cusCountry: 'Bangladesh',
             product_name: productname,
             product_category: 'OnlineProduct',
             shipping_method: 'Courier'
-          };  
-          
-          const response = await fetch(import.meta.env.VITE_ONLINE_PAYMENT_LINK, {
+        };
+
+        const response = await fetch(import.meta.env.VITE_ONLINE_PAYMENT_LINK, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -109,8 +118,8 @@ const AllProductDetails = () => {
         }
 
         const responsePayment = await response.json();
-        const paymentLink = responsePayment.url; 
-          window.location.href = paymentLink;
+        const paymentLink = responsePayment.url;
+        window.location.href = paymentLink;
     }
 
 
@@ -122,7 +131,6 @@ const AllProductDetails = () => {
             return;
         }
 
-       
 
         const pproductbuylist = {
             category_id: product.category_id,
@@ -154,9 +162,9 @@ const AllProductDetails = () => {
 
             const data = await response.json();
 
-            paymentData(product.product_name,current_user.email,product.product_price);
-
-            alert('Buy product successfully');
+            alert('Product order successfully, Please payment now...');
+            paymentData(product.product_name, current_user.email, product.product_price);
+           
             setCommentsValue("");
             document.getElementById('my_modal_3').style.display = 'none';
             return data;
